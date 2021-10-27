@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ChristiansOeCs.Entities
+namespace ChristiansOeCsProject.Entities
 {
     public class Route
     {

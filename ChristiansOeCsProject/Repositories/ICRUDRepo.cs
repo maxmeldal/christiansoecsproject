@@ -1,4 +1,4 @@
-namespace ChristiansOeCs.Repositories
+namespace ChristiansOeCsProject.Repositories
 {
     public interface ICRUDRepo
     {

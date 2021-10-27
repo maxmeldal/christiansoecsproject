@@ -1,4 +1,4 @@
-namespace ChristiansOeCs.Service
+namespace ChristiansOeCsProject.Service
 {
     public class TimeService
     {

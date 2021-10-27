@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace ChristiansOeCs.Entities
+namespace ChristiansOeCsProject.Entities
 {
     public class Attraction : Location
     {

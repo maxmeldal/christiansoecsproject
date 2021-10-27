@@ -1,4 +1,4 @@
-namespace ChristiansOeCs.Entities
+namespace ChristiansOeCsProject.Entities
 {
     public abstract class Location
     {
