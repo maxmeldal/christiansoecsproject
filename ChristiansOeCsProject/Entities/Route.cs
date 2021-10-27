@@ -45,5 +45,7 @@ namespace ChristiansOeCsProject.Entities
             get => _attractions;
             set => _attractions = value;
         }
+        
+        // comment comment comment fjernes!!!
     }
 }
