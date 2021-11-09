@@ -2,13 +2,13 @@ namespace ChristiansOeCsProject.Entities
 {
     public class Facility : Location
     {
-        public Facility(double latitiude, double longtitude, string name) : base(latitiude, longtitude, name)
+        public Facility(string id, double latitiude, double longitude, string name) : base(id, latitiude, longitude, name)
         {
         }
         
         public override string ToString()
         {
-            return "lat: " + Latitude + ", long: " + Longitude + ", name: " + Name;
+            return $"id: {Id}, lat: {Latitude}, long: {Longitude}, name: {Name}";
         }
     }
 }

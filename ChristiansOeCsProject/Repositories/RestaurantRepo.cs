@@ -6,15 +6,13 @@ using Google.Cloud.Firestore;
 
 namespace ChristiansOeCsProject.Repositories
 {
-    public class FacilityRepo : ICRUDRepo<Facility>
+    public class RestaurantRepo : ICRUDRepo<Restaurant>
     {
-
         private FirestoreDb db = FirebaseConnection.GetConnection();
         
-        public async IAsyncEnumerable<Facility> ReadAll()
+        public async IAsyncEnumerable<Restaurant> ReadAll()
         {
-
-            var qref = db.Collection("facilities");
+            var qref = db.Collection("restaurants");
             var snap = await qref.GetSnapshotAsync();
 
             foreach (var docsnap in snap)
@@ -27,15 +25,22 @@ namespace ChristiansOeCsProject.Repositories
                     var lat = Convert.ToDouble(dict["lat"]);
                     var longi = Convert.ToDouble(dict["long"]);
                     var name = Convert.ToString(dict["name"]);
+                    var url = Convert.ToString(dict["url"]);
+                    if (url is "null")
+                    {
+                        url = null;
+                    }
+                    var open = Convert.ToDouble(dict["open"]);
+                    var close = Convert.ToDouble(dict["close"]);
                     
-                    yield return new Facility(id, lat, longi, name);
+                    yield return new Restaurant(id, lat, longi, name, url, open, close);
                 }
             }
         }
 
-        public async Task<Facility> ReadById(string id)
+        public async Task<Restaurant> ReadById(string id)
         {
-            var DocRef = db.Collection("facilities").Document(id);
+            var DocRef = db.Collection("restaurants").Document(id);
             var docsnap = await DocRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
@@ -44,7 +49,14 @@ namespace ChristiansOeCsProject.Repositories
                 var lat = Convert.ToDouble(dict["lat"]);
                 var longi = Convert.ToDouble(dict["long"]);
                 var name = Convert.ToString(dict["name"]);
-                return new Facility(id, lat, longi, name);
+                var url = Convert.ToString(dict["url"]);
+                if (url is "null")
+                {
+                    url = null;
+                }
+                var open = Convert.ToDouble(dict["open"]);
+                var close = Convert.ToDouble(dict["close"]);
+                return new Restaurant(id, lat, longi, name, url, open, close);
             }
 
             return null;

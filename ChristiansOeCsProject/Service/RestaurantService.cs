@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
+using ChristiansOeCsProject.Repositories;
 
 namespace ChristiansOeCsProject.Service
 {
     public class RestaurantService
     {
-        public List<Restaurant> ReadAll()
+        private RestaurantRepo repo = new RestaurantRepo();
+        public async Task<List<Restaurant>> ReadAll()
         {
-            var facilities = new List<Restaurant>();
-            return facilities;
+            
+            return await repo.ReadAll().ToListAsync();
         }
 
-        public Restaurant ReadById(int id)
+        public Restaurant ReadById(string id)
         {
-            return null;
+            return repo.ReadById(id).Result;
         }
     }
 }

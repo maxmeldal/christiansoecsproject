@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ChristiansOeCsProject.Repositories
 {
     public interface ICRUDRepo<T>
     {
         IAsyncEnumerable<T> ReadAll();
-        T ReadById(int id);
+        Task<T> ReadById(string id);
 
     }
 }

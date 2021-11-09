@@ -7,7 +7,7 @@ namespace ChristiansOeCsProject.Entities
         private QR _qr;
         private string _audio;
         
-        public Attraction(double latitiude, double longtitude, string name, QR qr, string audio) : base(latitiude, longtitude, name)
+        public Attraction(string id, double latitiude, double longtitude, string name, QR qr, string audio) : base(id, latitiude, longtitude, name)
         {
             _qr = qr;
             _audio = audio;

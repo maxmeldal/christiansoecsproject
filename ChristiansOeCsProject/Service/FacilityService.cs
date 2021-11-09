@@ -14,9 +14,9 @@ namespace ChristiansOeCsProject.Service
             return await repo.ReadAll().ToListAsync();
         }
 
-        public Facility ReadById(int id)
+        public Facility ReadById(string id)
         {
-            return null;
+            return repo.ReadById(id).Result;
         }
     }
 }
