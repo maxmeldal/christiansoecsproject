@@ -21,14 +21,13 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     var dict = docsnap.ToDictionary();
+                    
                     var lat = Convert.ToDouble(dict["lat"]);
                     var longi = Convert.ToDouble(dict["long"]);
                     var name = Convert.ToString(dict["name"]);
                     
-                    Facility facility = new Facility(lat, longi, name);
-                    yield return facility;
+                    yield return new Facility(lat, longi, name);
                 }
-                
             }
         }
 
