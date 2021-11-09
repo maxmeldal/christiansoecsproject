@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
 using Microsoft.AspNetCore.Http;
 
@@ -35,7 +36,7 @@ namespace ChristiansOeCsProject.Controllers
         //Http example:
         //https://localhost:5001/api/trip/DgXf06FNGLTODjEaOKsR
         [HttpGet("api/trip/{id}")]
-        public async Task<ActionResult> GetRoute(string id)
+        public async Task<ActionResult<Trip>> GetRoute(string id)
         {
             var trip =  _tripService.ReadById(id);
         
