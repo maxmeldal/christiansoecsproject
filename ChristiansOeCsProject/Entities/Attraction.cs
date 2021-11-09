@@ -4,16 +4,21 @@ namespace ChristiansOeCsProject.Entities
 {
     public class Attraction : Location
     {
-        private string _audio;
+        //private string _audio;
         
-        public Attraction(string id, double latitiude, double longtitude, string name, string audio) : base(id, latitiude, longtitude, name)
+        public Attraction(string id, double latitiude, double longtitude, string name/*, string audio*/) : base(id, latitiude, longtitude, name)
         {
-            _audio = audio;
+            //_audio = audio;
         }
-        public string Audio
+        // public string Audio
+        // {
+        //     get => _audio;
+        //     set => _audio = value;
+        // }
+        
+        public override string ToString()
         {
-            get => _audio;
-            set => _audio = value;
+            return $"id: {Id}, lat: {Latitude}, long: {Longitude}, name: {Name}";
         }
     }
 }

@@ -3,18 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Repositories;
+using Microsoft.AspNetCore.Routing;
 
 namespace ChristiansOeCsProject.Service
 {
-    public class AttractionService
+    public class TripService
     {
-        private AttractionRepo repo = new AttractionRepo();
-        public async Task<List<Attraction>> ReadAll()
+        private TripRepo repo = new TripRepo();
+        public async Task<List<Trip>> ReadAll()
         {
             return await repo.ReadAll().ToListAsync();
         }
 
-        public Attraction ReadById(string id)
+        public Trip ReadById(string id)
         {
             return repo.ReadById(id).Result;
         }
