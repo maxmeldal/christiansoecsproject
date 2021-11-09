@@ -33,7 +33,9 @@ namespace ChristiansOeCsProject.Service
             // Radius of earth in kilometers
             double r = 6371;
 
-            return (c * r);
+            double result = (c * r);
+
+            return result;
         }
     }
 }

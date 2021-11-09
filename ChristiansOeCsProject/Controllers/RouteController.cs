@@ -19,7 +19,7 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         [HttpGet]
-        public Task<ActionResult<IEnumerable<Route>>> GetRoutes()
+        public Task<ActionResult<List<Route>>> GetRoutes()
         {
             return null;
         }
