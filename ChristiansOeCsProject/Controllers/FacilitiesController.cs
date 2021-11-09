@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChristiansOeCsProject.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     public class FacilityController : ControllerBase
     {
         private readonly FacilityService _facilityService;
@@ -21,31 +20,23 @@ namespace ChristiansOeCsProject.Controllers
             _facilityService = facilityService;
         }
 
-        [HttpGet]
+        [HttpGet("facilities")]
         public async Task<List<Facility>> GetFacilities()
         {
             return (await _facilityService.ReadAll());
         }
 
-         /*[HttpGet("{id:int}")]
-         public async Task<ActionResult<Facility>> GetFacility(int id)
+         [HttpGet("facilities/{id}")]
+         public async Task<ActionResult<Facility>> GetFacility(string id)
          {
-             try
-             {
-                 var result = await _facilityService.ReadById(id);
+             var facility = _facilityService.ReadById(id);
         
-                 if (result == null)
-                 {
-
-                     return null;
-                 }
-        
-                 return result;
-             }
-             catch (Exception)
+             if (facility == null)
              {
-                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                 return NotFound();
              }
-         }*/
+        
+             return facility;
+         }
     }
 }

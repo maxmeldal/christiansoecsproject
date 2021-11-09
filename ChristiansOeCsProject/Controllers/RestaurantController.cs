@@ -1,8 +1,15 @@
-﻿using ChristiansOeCsProject.Service;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ChristiansOeCsProject.Entities;
+using ChristiansOeCsProject.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
+    [ApiController]
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantService _restaurantService;
@@ -12,37 +19,23 @@ namespace ChristiansOeCsProject.Controllers
             _restaurantService = restaurantService;
         }
 
-        /*[HttpGet]
-        public async Task<ActionResult<List<Restaurant>>> GetRestaurants()
+        [HttpGet("restaurants")]
+        public async Task<List<Restaurant>> GetRestaurants()
         {
-            try
-            {
-                return (await _restaurantService.ReadAll()).ToList();
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }*/
+            return (await _restaurantService.ReadAll()).ToList();
+        }
 
-        /*[HttpGet("{id:int}")]
-        public async Task<ActionResult<Restaurant>> GetRestaurant(int id)
+        [HttpGet("restaurant/{id}")]
+        public async Task<ActionResult<Restaurant>> GetRestaurant(string id)
         {
-            try
+            var restaurant = _restaurantService.ReadById(id);
+        
+            if (restaurant == null)
             {
-                var result = await _restaurantService.ReadById(id);
-       
-                if (result == null)
-                {
-                    return null;
-                }
-       
-                return result;
+                return NotFound();
             }
-            catch (Exception)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }*/
+        
+            return restaurant;
+        }
     }
 }
