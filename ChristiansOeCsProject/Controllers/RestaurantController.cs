@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
@@ -10,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChristiansOeCsProject.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantService _restaurantService;
@@ -19,23 +18,35 @@ namespace ChristiansOeCsProject.Controllers
             _restaurantService = restaurantService;
         }
 
-        [HttpGet("restaurants")]
-        public async Task<List<Restaurant>> GetRestaurants()
+        //Http example:
+        //https://localhost:5001/api/restaurants
+        [HttpGet("api/restaurants")]
+        public async Task<ActionResult> GetRestaurants()
         {
-            return (await _restaurantService.ReadAll()).ToList();
+            try
+            {
+                return Ok(_restaurantService.ReadAll());
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
-        [HttpGet("restaurant/{id}")]
+        //Http example:
+        //https://localhost:5001/api/restaurant/id
+        [HttpGet("api/restaurant/{id}")]
         public async Task<ActionResult<Restaurant>> GetRestaurant(string id)
         {
             var restaurant = _restaurantService.ReadById(id);
         
             if (restaurant == null)
             {
+                //could also use badRequest()
                 return NotFound();
             }
         
-            return restaurant;
+            return Ok(restaurant);
         }
     }
 }

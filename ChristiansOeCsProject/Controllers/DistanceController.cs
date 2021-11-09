@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using ChristiansOeCsProject.Entities;
-using ChristiansOeCsProject.Service;
-using Microsoft.AspNetCore.Http;
+﻿using ChristiansOeCsProject.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
+    [ApiController]
+    [Produces("application/json")]
     public class DistanceController : ControllerBase
     {
         private readonly DistanceService _distanceService;
@@ -15,19 +13,14 @@ namespace ChristiansOeCsProject.Controllers
         {
             _distanceService = distanceService;
         }
-
-        /*[HttpGet]
-        public async Task<ActionResult> getDistance(double lat, double lon)
+        
+        //Http example:
+        //https://localhost:5001/api/distance?lat=55.31&lon=15.19
+        [HttpGet("api/distance")]
+        public ActionResult<double> getDistance(double lat, double lon)
         {
-            try
-            {
-                return _distanceService.Distance(lat, lon);
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }*/
+             return Ok(_distanceService.Distance(lat, lon));
+        }
     
 }
 }

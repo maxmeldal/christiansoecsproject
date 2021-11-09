@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
-using Grpc.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     public class FacilityController : ControllerBase
     {
         private readonly FacilityService _facilityService;
@@ -19,24 +16,35 @@ namespace ChristiansOeCsProject.Controllers
         {
             _facilityService = facilityService;
         }
-
-        [HttpGet("facilities")]
-        public async Task<List<Facility>> GetFacilities()
+        //Http example:
+        //https://localhost:5001/api/facilities
+        [HttpGet("api/facilities")]
+        public async Task<ActionResult> GetFacilities()
         {
-            return (await _facilityService.ReadAll());
+            try
+            {
+                return Ok(_facilityService.ReadAll().Result);
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
-         [HttpGet("facilities/{id}")]
-         public async Task<ActionResult<Facility>> GetFacility(string id)
+         //Http example:
+         //https://localhost:5001/api/facilities/ED79tdWc3e82jaQhNLt5
+         [HttpGet("api/facilities/{id}")]
+         public async Task<ActionResult> GetFacility(string id)
          {
-             var facility = _facilityService.ReadById(id);
+             var facility =  _facilityService.ReadById(id);
         
              if (facility == null)
              {
+                 //could also use badRequest()
                  return NotFound();
              }
         
-             return facility;
+             return Ok(facility);
          }
     }
 }

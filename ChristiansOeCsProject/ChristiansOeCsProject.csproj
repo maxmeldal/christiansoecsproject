@@ -16,4 +16,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Controllers\AttractionController.cs">
+        <DependentUpon>DistanceController.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

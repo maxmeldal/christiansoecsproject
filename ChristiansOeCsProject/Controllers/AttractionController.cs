@@ -19,37 +19,37 @@ namespace ChristiansOeCsProject.Controllers
             _attractionService = attractionService;
         }
 
-        /*[HttpGet]
-        public async Task<ActionResult<List<Attraction>>> GetAttractions()
+        [HttpGet]
+        public ActionResult GetAttractions()
         {
             try
             {
-                return (await _attraction.ReadAll()).ToList();
+                return Ok(_attractionService.ReadAll());
             }
             catch (Exception)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }*/
+        }
 
-        /*[HttpGet("{id:int}")]
-        public async Task<ActionResult<Attraction>> GetAttraction(int id)
+        [HttpGet("{id:int}")]
+        public ActionResult GetAttraction(string id)
         {
             try
             {
-                var result = await _attractionService.ReadById(id);
+                var attraction = _attractionService.ReadById(id);
        
-                if (result == null)
+                if (attraction == null)
                 {
-                    return null;
+                    return NotFound();
                 }
        
-                return result;
+                return Ok(attraction);
             }
             catch (Exception)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }*/
+        }
     }
 }

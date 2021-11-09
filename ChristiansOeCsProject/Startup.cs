@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Repositories;
 using ChristiansOeCsProject.Service;
 using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,11 @@ namespace ChristiansOeCsProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<FacilityService>();
+            services.AddScoped<RestaurantService>();
+            services.AddScoped<TripService>();
+            services.AddScoped<AttractionService>();
+            services.AddScoped<DistanceService>();
+            services.AddScoped<TimeService>();
             services.AddControllers();
         }
 
@@ -30,12 +36,13 @@ namespace ChristiansOeCsProject
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
+            
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
-            });
+            app.UseAuthentication();
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
