@@ -13,10 +13,10 @@ namespace ChristiansOeCsProject.Repositories
         public async IAsyncEnumerable<Facility> ReadAll()
         {
 
-            Query Qref = db.Collection("facilities");
-            QuerySnapshot snap = await Qref.GetSnapshotAsync();
+            var Qref = db.Collection("facilities");
+            var snap = await Qref.GetSnapshotAsync();
 
-            foreach (DocumentSnapshot docsnap in snap)
+            foreach (var docsnap in snap)
             {
                 if (docsnap.Exists)
                 {
