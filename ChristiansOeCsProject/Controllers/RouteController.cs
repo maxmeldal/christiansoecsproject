@@ -11,15 +11,15 @@ namespace ChristiansOeCsProject.Controllers
     [Route("api/[controller]")]
     public class RouteController : ControllerBase
     {
-        private readonly RouteService _routeService;
+        private readonly TripService _tripService;
 
-        public RouteController(RouteService routeService)
+        public RouteController(TripService tripService)
         {
-            _routeService = routeService;
+            _tripService = tripService;
         }
 
         [HttpGet]
-        public Task<ActionResult<IEnumerable<Route>>> GetRoutes()
+        public Task<ActionResult<IEnumerable<Trip>>> GetRoutes()
         {
             return null;
         }

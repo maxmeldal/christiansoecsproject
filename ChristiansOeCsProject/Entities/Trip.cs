@@ -2,15 +2,17 @@ using System.Collections.Generic;
 
 namespace ChristiansOeCsProject.Entities
 {
-    public class Route
+    public class Trip
     {
+        private string _id;
         private string _name;
         private string _info;
         private Theme _theme;
         private List<Attraction> _attractions;
 
-        public Route(string name, string info, Theme theme, List<Attraction> attractions)
+        public Trip(string id, string name, string info, Theme theme, List<Attraction> attractions)
         {
+            _id = id;
             _name = name;
             _info = info;
             _theme = theme;
@@ -20,6 +22,12 @@ namespace ChristiansOeCsProject.Entities
         public void AddAttraction(Attraction attraction)
         {
             _attractions.Add(attraction);
+        }
+
+        public string Id
+        {
+            get => _id;
+            set => _id = value;
         }
 
         public string Name
@@ -45,7 +53,15 @@ namespace ChristiansOeCsProject.Entities
             get => _attractions;
             set => _attractions = value;
         }
-        
-        // comment comment comment fjernes!!!
+
+        public override string ToString()
+        {
+            var str = "";
+            foreach (var attractionStr in Attractions)
+            {
+                str += attractionStr + " ";
+            }
+            return $"id: {Id}, name: {Name}, name: {Info}, theme: {Theme}, attractions: [{str}]";
+        }
     }
 }

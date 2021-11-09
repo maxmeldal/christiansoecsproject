@@ -23,9 +23,6 @@ namespace ChristiansOeCsProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //var service = new RestaurantService();
-            //Console.WriteLine(service.ReadById("iutgrJX5roFSYEDboV2z"));
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
