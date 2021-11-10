@@ -101,7 +101,8 @@ namespace ChristiansOeCsProject.Repositories
 
         public void Delete(string id)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("restaurants").Document(id);
+            documentReference.DeleteAsync();
         }
     }
 }
