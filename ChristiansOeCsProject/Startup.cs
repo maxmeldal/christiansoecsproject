@@ -37,17 +37,15 @@ namespace ChristiansOeCsProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var attraction = new Attraction(123, 123, "navn");
-            var attraction1 = new Attraction(123, 123, "navn2");
-            var list = new List<Attraction>()
-            {
-                attraction,
-                attraction1
-            };
-            var trip = new Trip("name2", "info2", Theme.War, list);
             var service = new TripService();
-            service.Create(trip);
+            var trip = service.ReadById("DgXf06FNGLTODjEaOKsR");
+            Console.WriteLine(trip);
+            //var attractionService = new AttractionService();
+            trip.RemoveAttraction("8d16be31-a7ff-45ff-907d-6cbcab477c40");
+            Console.WriteLine(trip);
+            service.Update(trip);
             
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -60,9 +60,23 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
-        public Task<Attraction> Update(Attraction t)
+        public async Task<Attraction> Update(Attraction attraction)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", attraction.Latitude},
+                {"long", attraction.Longitude},
+                {"name", attraction.Name}
+            };
+
+            DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
+            if (snap.Exists)
+            {
+                await documentReference.SetAsync(data);
+            }
+
+            return attraction;
         }
 
         public void Delete(string id)

@@ -77,9 +77,26 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
-        public Task<Restaurant> Update(Restaurant t)
+        public async Task<Restaurant> Update(Restaurant restaurant)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("restaurants").Document(restaurant.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", restaurant.Latitude},
+                {"long", restaurant.Longitude},
+                {"name", restaurant.Name},
+                {"url", restaurant.Url},
+                {"open", restaurant.Open},
+                {"close", restaurant.Close}
+            };
+
+            DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
+            if (snap.Exists)
+            {
+                await documentReference.SetAsync(data);
+            }
+
+            return restaurant;
         }
 
         public void Delete(string id)

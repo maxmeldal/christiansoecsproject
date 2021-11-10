@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChristiansOeCsProject.Entities
 {
@@ -33,6 +34,12 @@ namespace ChristiansOeCsProject.Entities
         public void AddAttraction(Attraction attraction)
         {
             _attractions.Add(attraction);
+        }
+
+        public void RemoveAttraction(string id)
+        {
+            int index = _attractions.FindIndex(a => a.Id == id);
+            _attractions.RemoveAt(index);
         }
 
         public string Id
