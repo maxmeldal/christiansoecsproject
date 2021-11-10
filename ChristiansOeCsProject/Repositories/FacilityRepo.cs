@@ -10,7 +10,12 @@ namespace ChristiansOeCsProject.Repositories
     {
 
         private FirestoreDb db = FirebaseConnection.GetConnection();
-        
+
+        public void Create(Facility t)
+        {
+            throw new NotImplementedException();
+        }
+
         public async IAsyncEnumerable<Facility> ReadAll()
         {
 
@@ -48,6 +53,16 @@ namespace ChristiansOeCsProject.Repositories
             }
 
             return null;
+        }
+
+        public Task<Facility> Update(Facility t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

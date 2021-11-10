@@ -10,6 +10,11 @@ namespace ChristiansOeCsProject.Repositories
     {
         private FirestoreDb db = FirebaseConnection.GetConnection();
 
+        public void Create(Attraction t)
+        {
+            throw new NotImplementedException();
+        }
+
         public async IAsyncEnumerable<Attraction> ReadAll()
         {
             var qref = db.Collection("attractions");
@@ -46,6 +51,16 @@ namespace ChristiansOeCsProject.Repositories
             }
 
             return null;
+        }
+
+        public Task<Attraction> Update(Attraction t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

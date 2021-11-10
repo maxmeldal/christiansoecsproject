@@ -9,7 +9,12 @@ namespace ChristiansOeCsProject.Repositories
     public class RestaurantRepo : ICRUDRepo<Restaurant>
     {
         private FirestoreDb db = FirebaseConnection.GetConnection();
-        
+
+        public void Create(Restaurant t)
+        {
+            throw new NotImplementedException();
+        }
+
         public async IAsyncEnumerable<Restaurant> ReadAll()
         {
             var qref = db.Collection("restaurants");
@@ -60,6 +65,16 @@ namespace ChristiansOeCsProject.Repositories
             }
 
             return null;
+        }
+
+        public Task<Restaurant> Update(Restaurant t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
