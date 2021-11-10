@@ -12,7 +12,7 @@ namespace ChristiansOeCsProject.Service
 
         public async void Create(Facility facility)
         {
-            
+            repo.Create(facility);
         }
 
         public async Task<List<Facility>> ReadAll()
@@ -27,12 +27,12 @@ namespace ChristiansOeCsProject.Service
 
         public async Task<Facility> Update(Facility facility)
         {
-            return null;
+            return await repo.Update(facility);
         }
 
         public async void Delete(string id)
         {
-            
+            repo.Delete(id);
         }
     }
 }

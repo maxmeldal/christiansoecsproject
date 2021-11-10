@@ -12,7 +12,7 @@ namespace ChristiansOeCsProject.Service
 
         public async void Create(Attraction attraction)
         {
-            
+            repo.Create(attraction);
         }
 
         public async Task<List<Attraction>> ReadAll()
@@ -27,12 +27,12 @@ namespace ChristiansOeCsProject.Service
 
         public async Task<Attraction> Update(Attraction attraction)
         {
-            return null;
+            return await repo.Update(attraction);
         }
 
         public async void Delete(string id)
         {
-            
+            repo.Delete(id);
         }
     }
 }

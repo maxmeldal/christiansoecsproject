@@ -13,7 +13,7 @@ namespace ChristiansOeCsProject.Service
 
         public async void Create(Trip trip)
         {
-            
+            repo.Create(trip);
         }
 
         public async Task<List<Trip>> ReadAll()
@@ -28,12 +28,12 @@ namespace ChristiansOeCsProject.Service
 
         public async Task<Trip> Update(Trip trip)
         {
-            return null;
+            return await repo.Update(trip);
         }
 
         public async void Delete(string id)
         {
-            
+            repo.Delete(id);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ChristiansOeCsProject.Service
 
         public async void Create(Restaurant restaurant)
         {
-            
+            repo.Create(restaurant);
         }
 
         public async Task<List<Restaurant>> ReadAll()
@@ -28,7 +28,7 @@ namespace ChristiansOeCsProject.Service
 
         public async Task<Restaurant> Update(Restaurant restaurant)
         {
-            return null;
+            return await repo.Update(restaurant);
         }
 
         public async void Delete(string id)
