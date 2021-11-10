@@ -25,7 +25,7 @@ namespace ChristiansOeCsProject.Controllers
         {
             try
             {
-                return Ok(_restaurantService.ReadAll());
+                return Ok(_restaurantService.ReadAll().Result);
             }
             catch (Exception)
             {
