@@ -38,7 +38,16 @@ namespace ChristiansOeCsProject
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var attraction = new Attraction(123, 123, "navn");
-            var service = new AttractionService();
+            var attraction1 = new Attraction(123, 123, "navn2");
+            var list = new List<Attraction>()
+            {
+                attraction,
+                attraction1
+            };
+            var trip = new Trip("name2", "info2", Theme.War, list);
+            var service = new TripService();
+            service.Create(trip);
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

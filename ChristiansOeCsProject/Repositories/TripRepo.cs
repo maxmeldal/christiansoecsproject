@@ -13,9 +13,23 @@ namespace ChristiansOeCsProject.Repositories
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
         private readonly AttractionService _attractionService = new AttractionService();
 
-        public void Create(Trip t)
+        public void Create(Trip trip)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("routes").Document(trip.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"name", trip.Name},
+                {"info", trip.Info},
+                {"theme", trip.Theme}
+            };
+            documentReference.CreateAsync(data);
+            
+            CollectionReference collectionReference = documentReference.Collection("attractions");
+            foreach (var tripAttraction in trip.Attractions)
+            {
+                DocumentReference docRef = collectionReference.Document(tripAttraction.Id);
+                docRef.CreateAsync(new Dictionary<string, object>());
+            }
         }
 
         public async IAsyncEnumerable<Trip> ReadAll()

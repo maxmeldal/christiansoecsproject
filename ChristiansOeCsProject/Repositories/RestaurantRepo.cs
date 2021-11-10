@@ -10,9 +10,19 @@ namespace ChristiansOeCsProject.Repositories
     {
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
-        public void Create(Restaurant t)
+        public void Create(Restaurant restaurant)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("restaurants").Document(restaurant.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", restaurant.Latitude},
+                {"long", restaurant.Longitude},
+                {"name", restaurant.Name},
+                {"url", restaurant.Url},
+                {"open", restaurant.Open},
+                {"close", restaurant.Close}
+            };
+            documentReference.CreateAsync(data);
         }
 
         public async IAsyncEnumerable<Restaurant> ReadAll()

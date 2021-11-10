@@ -13,8 +13,11 @@ namespace ChristiansOeCsProject.Entities
             _close = close;
         }
 
-        public Restaurant(double latitude, double longitude, string name) : base(latitude, longitude, name)
+        public Restaurant(double latitude, double longitude, string name, string url, double open, double close) : base(latitude, longitude, name)
         {
+            _url = url;
+            _open = open;
+            _close = close;
         }
 
         public string Url
