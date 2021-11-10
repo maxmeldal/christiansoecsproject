@@ -54,5 +54,35 @@ namespace ChristiansOeCsProject.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+        
+        //Http example:
+        //https://localhost:5001/api/create/attaction
+        [HttpPost("api/create/attaction")]
+        public async Task<ActionResult<Attraction>> Create(Attraction attraction)
+        {
+            return CreatedAtAction(nameof(GetAttraction), new {}, attraction);
+        }
+
+        [HttpPut("api/update/attraction")]
+        public async Task<ActionResult<Attraction>> Update(Attraction attraction)
+        {
+            if (attraction != null)
+            {
+                await _attractionService.Update(attraction);
+            }
+
+            return NotFound();
+        }
+
+        [HttpDelete("api/delete/trip/{id}")]
+        public async Task<ActionResult<Trip>> Delete(string id)
+        {
+            if (_attractionService.ReadById(id) != null)
+            {
+                _attractionService.Delete(id);
+            }
+
+            return NotFound();
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace ChristiansOeCsProject.Controllers
         {
             _tripService = tripService;
         }
-        
+
         //Http example:
         //https://localhost:5001/api/trips
         [HttpGet("api/trips")]
@@ -32,21 +32,51 @@ namespace ChristiansOeCsProject.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        
+
         //Http example:
         //https://localhost:5001/api/trip/DgXf06FNGLTODjEaOKsR
         [HttpGet("api/trip/{id}")]
-        public async Task<ActionResult<Trip>> GetRoute(string id)
+        public async Task<ActionResult<Trip>> GetTrip(string id)
         {
-            var trip =  _tripService.ReadById(id);
-        
+            var trip = _tripService.ReadById(id);
+
             if (trip == null)
             {
                 //could also use badRequest()
                 return NotFound();
             }
-        
+
             return Ok(trip);
         }
-    }
+
+        //Http example:
+        //https://localhost:5001/api/create/trip
+        [HttpPost("api/create/trip")]
+        public async Task<ActionResult<Trip>> Create(Trip trip)
+        {
+            return CreatedAtAction(nameof(GetTrip), new {}, trip);
+        }
+
+        [HttpPut("api/update/trip")]
+        public async Task<ActionResult<Trip>> Update(Trip trip)
+        {
+            if (trip != null)
+            {
+                await _tripService.Update(trip);
+            }
+
+            return NotFound();
+        }
+
+        [HttpDelete("api/delete/trip/{id}")]
+        public async Task<ActionResult<Trip>> Delete(string id)
+        {
+            if (_tripService.ReadById(id) != null)
+            {
+                _tripService.Delete(id);
+            }
+
+            return NotFound();
+        }
+}
 }

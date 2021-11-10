@@ -47,5 +47,36 @@ namespace ChristiansOeCsProject.Controllers
         
              return Ok(facility);
          }
+         
+         
+         //Http example:
+         //https://localhost:5001/api/create/facility
+         [HttpPost("api/create/facility")]
+         public async Task<ActionResult<Facility>> Create(Attraction attraction)
+         {
+             return CreatedAtAction(nameof(GetFacility), new {}, attraction);
+         }
+
+         [HttpPut("api/update/facility")]
+         public async Task<ActionResult<Facility>> Update(Facility facility)
+         {
+             if (facility != null)
+             {
+                 await _facilityService.Update(facility);
+             }
+
+             return NotFound();
+         }
+
+         [HttpDelete("api/delete/facility/{id}")]
+         public async Task<ActionResult<Trip>> Delete(string id)
+         {
+             if (_facilityService.ReadById(id) != null)
+             {
+                 _facilityService.Delete(id);
+             }
+
+             return NotFound();
+         }
     }
 }
