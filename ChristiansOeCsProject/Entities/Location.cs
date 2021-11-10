@@ -1,3 +1,5 @@
+using System;
+
 namespace ChristiansOeCsProject.Entities
 {
     public abstract class Location
@@ -10,6 +12,14 @@ namespace ChristiansOeCsProject.Entities
         protected Location(string id, double latitude, double longitude, string name)
         {
             _id = id;
+            _latitude = latitude;
+            _longitude = longitude;
+            _name = name;
+        }
+
+        protected Location(double latitude, double longitude, string name)
+        {
+            _id = Convert.ToString(Guid.NewGuid());
             _latitude = latitude;
             _longitude = longitude;
             _name = name;

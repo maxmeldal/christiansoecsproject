@@ -10,9 +10,16 @@ namespace ChristiansOeCsProject.Repositories
     {
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
-        public void Create(Attraction t)
+        public void Create(Attraction attraction)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", attraction.Latitude},
+                {"long", attraction.Longitude},
+                {"name", attraction.Name}
+            };
+            documentReference.CreateAsync(data);
         }
 
         public async IAsyncEnumerable<Attraction> ReadAll()

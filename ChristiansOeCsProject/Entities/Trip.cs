@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ChristiansOeCsProject.Entities
@@ -18,6 +19,16 @@ namespace ChristiansOeCsProject.Entities
             _theme = theme;
             _attractions = attractions;
         }
+        
+        public Trip(string name, string info, Theme theme, List<Attraction> attractions)
+        {
+            _id = Convert.ToString(Guid.NewGuid());
+            _name = name;
+            _info = info;
+            _theme = theme;
+            _attractions = attractions;
+        }
+        
 
         public void AddAttraction(Attraction attraction)
         {

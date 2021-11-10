@@ -31,6 +31,8 @@ namespace ChristiansOeCsProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var attraction = new Attraction(123, 123, "navn");
+            var service = new AttractionService();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
