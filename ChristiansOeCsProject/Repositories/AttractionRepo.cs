@@ -8,16 +8,23 @@ namespace ChristiansOeCsProject.Repositories
 {
     public class AttractionRepo : ICRUDRepo<Attraction>
     {
-        private FirestoreDb db = FirebaseConnection.GetConnection();
+        private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
-        public void Create(Attraction t)
+        public void Create(Attraction attraction)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", attraction.Latitude},
+                {"long", attraction.Longitude},
+                {"name", attraction.Name}
+            };
+            documentReference.CreateAsync(data);
         }
 
         public async IAsyncEnumerable<Attraction> ReadAll()
         {
-            var qref = db.Collection("attractions");
+            var qref = _db.Collection("attractions");
             var snap = await qref.GetSnapshotAsync();
 
             foreach (var docsnap in snap)
@@ -38,7 +45,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async Task<Attraction> ReadById(string id)
         {
-            var DocRef = db.Collection("attractions").Document(id);
+            var DocRef = _db.Collection("attractions").Document(id);
             var docsnap = await DocRef.GetSnapshotAsync();
 
             if (docsnap.Exists)

@@ -9,7 +9,7 @@ namespace ChristiansOeCsProject.Repositories
     public class FacilityRepo : ICRUDRepo<Facility>
     {
 
-        private FirestoreDb db = FirebaseConnection.GetConnection();
+        private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
         public void Create(Facility t)
         {
@@ -19,7 +19,7 @@ namespace ChristiansOeCsProject.Repositories
         public async IAsyncEnumerable<Facility> ReadAll()
         {
 
-            var qref = db.Collection("facilities");
+            var qref = _db.Collection("facilities");
             var snap = await qref.GetSnapshotAsync();
 
             foreach (var docsnap in snap)
@@ -40,7 +40,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async Task<Facility> ReadById(string id)
         {
-            var DocRef = db.Collection("facilities").Document(id);
+            var DocRef = _db.Collection("facilities").Document(id);
             var docsnap = await DocRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
