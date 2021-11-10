@@ -2,8 +2,8 @@
 {
     public enum Theme
     {
-        Nature,
-        History,
-        War
+        Nature = 1,
+        History = 2,
+        War = 3
     }
 }
