@@ -8,7 +8,7 @@ namespace ChristiansOeCsProject.Repositories
 {
     public class RestaurantRepo : ICRUDRepo<Restaurant>
     {
-        private FirestoreDb db = FirebaseConnection.GetConnection();
+        private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
         public void Create(Restaurant t)
         {
@@ -17,7 +17,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async IAsyncEnumerable<Restaurant> ReadAll()
         {
-            var qref = db.Collection("restaurants");
+            var qref = _db.Collection("restaurants");
             var snap = await qref.GetSnapshotAsync();
 
             foreach (var docsnap in snap)
@@ -45,7 +45,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async Task<Restaurant> ReadById(string id)
         {
-            var DocRef = db.Collection("restaurants").Document(id);
+            var DocRef = _db.Collection("restaurants").Document(id);
             var docsnap = await DocRef.GetSnapshotAsync();
 
             if (docsnap.Exists)

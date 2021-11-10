@@ -10,8 +10,8 @@ namespace ChristiansOeCsProject.Repositories
 {
     public class TripRepo : ICRUDRepo<Trip>
     {
-        private FirestoreDb db = FirebaseConnection.GetConnection();
-        private AttractionService service = new AttractionService();
+        private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
+        private readonly AttractionService _attractionService = new AttractionService();
 
         public void Create(Trip t)
         {
@@ -20,7 +20,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async IAsyncEnumerable<Trip> ReadAll()
         {
-            var qref = db.Collection("routes");
+            var qref = _db.Collection("routes");
             var snap = await qref.GetSnapshotAsync();
 
             foreach (var docsnap in snap)
@@ -47,13 +47,13 @@ namespace ChristiansOeCsProject.Repositories
                     }
 
                     var attractions = new List<Attraction>();
-                    var attractionsRef = db.Collection("routes").Document(id).Collection("attractions");
+                    var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
                     var attractionsSnap = await attractionsRef.GetSnapshotAsync();
                     foreach (var attrsnap in attractionsSnap)
                     {
                         if (attrsnap.Exists)
                         {
-                            attractions.Add(service.ReadById(attrsnap.Id));
+                            attractions.Add(_attractionService.ReadById(attrsnap.Id));
                         }
                         
                     }
@@ -65,7 +65,7 @@ namespace ChristiansOeCsProject.Repositories
 
         public async Task<Trip> ReadById(string id)
         {
-            var DocRef = db.Collection("routes").Document(id);
+            var DocRef = _db.Collection("routes").Document(id);
             var docsnap = await DocRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
@@ -88,13 +88,13 @@ namespace ChristiansOeCsProject.Repositories
                 }
                 
                 var attractions = new List<Attraction>();
-                var attractionsRef = db.Collection("routes").Document(id).Collection("attractions");
+                var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
                 var attractionsSnap = await attractionsRef.GetSnapshotAsync();
                 foreach (var attrsnap in attractionsSnap)
                 {
                     if (attrsnap.Exists)
                     {
-                        attractions.Add(service.ReadById(attrsnap.Id));
+                        attractions.Add(_attractionService.ReadById(attrsnap.Id));
                     }
                         
                 }
