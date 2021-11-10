@@ -153,9 +153,18 @@ namespace ChristiansOeCsProject.Repositories
             return trip;
         }
 
-        public void Delete(string id)
+        public async void Delete(string id)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("routes").Document(id);
+            CollectionReference collectionReference = documentReference.Collection("attractions");
+            QuerySnapshot snap = await collectionReference.GetSnapshotAsync();
+
+            foreach (var documentSnapshot in snap.Documents)
+            {
+                await documentSnapshot.Reference.DeleteAsync();
+            }
+
+            await documentReference.DeleteAsync();
         }
     }
 }

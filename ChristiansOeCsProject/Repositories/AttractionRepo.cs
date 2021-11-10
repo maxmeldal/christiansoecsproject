@@ -81,7 +81,8 @@ namespace ChristiansOeCsProject.Repositories
 
         public void Delete(string id)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("attractions").Document(id);
+            documentReference.DeleteAsync();
         }
     }
 }

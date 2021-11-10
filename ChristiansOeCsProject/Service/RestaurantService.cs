@@ -31,9 +31,9 @@ namespace ChristiansOeCsProject.Service
             return repo.Update(restaurant);
         }
 
-        public async void Delete(string id)
+        public void Delete(string id)
         {
-            
+            repo.Delete(id);
         }
     }
 }
