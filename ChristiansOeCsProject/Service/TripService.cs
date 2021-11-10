@@ -10,6 +10,12 @@ namespace ChristiansOeCsProject.Service
     public class TripService
     {
         private TripRepo repo = new TripRepo();
+
+        public async void Create(Trip trip)
+        {
+            
+        }
+
         public async Task<List<Trip>> ReadAll()
         {
             return await repo.ReadAll().ToListAsync();
@@ -18,6 +24,16 @@ namespace ChristiansOeCsProject.Service
         public Trip ReadById(string id)
         {
             return repo.ReadById(id).Result;
+        }
+
+        public async Task<Trip> Update(Trip trip)
+        {
+            return null;
+        }
+
+        public async void Delete(string id)
+        {
+            
         }
     }
 }

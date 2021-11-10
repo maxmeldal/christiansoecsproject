@@ -9,6 +9,12 @@ namespace ChristiansOeCsProject.Service
     public class AttractionService
     {
         private AttractionRepo repo = new AttractionRepo();
+
+        public async void Create(Attraction attraction)
+        {
+            
+        }
+
         public async Task<List<Attraction>> ReadAll()
         {
             return await repo.ReadAll().ToListAsync();
@@ -17,6 +23,16 @@ namespace ChristiansOeCsProject.Service
         public Attraction ReadById(string id)
         {
             return repo.ReadById(id).Result;
+        }
+
+        public async Task<Attraction> Update(Attraction attraction)
+        {
+            return null;
+        }
+
+        public async void Delete(string id)
+        {
+            
         }
     }
 }

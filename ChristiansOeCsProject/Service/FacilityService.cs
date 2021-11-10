@@ -9,6 +9,12 @@ namespace ChristiansOeCsProject.Service
     public class FacilityService
     {
         private FacilityRepo repo = new FacilityRepo();
+
+        public async void Create(Facility facility)
+        {
+            
+        }
+
         public async Task<List<Facility>> ReadAll()
         {
             return await repo.ReadAll().ToListAsync();
@@ -17,6 +23,16 @@ namespace ChristiansOeCsProject.Service
         public Facility ReadById(string id)
         {
             return repo.ReadById(id).Result;
+        }
+
+        public async Task<Facility> Update(Facility facility)
+        {
+            return null;
+        }
+
+        public async void Delete(string id)
+        {
+            
         }
     }
 }
