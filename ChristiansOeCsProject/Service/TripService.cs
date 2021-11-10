@@ -26,9 +26,9 @@ namespace ChristiansOeCsProject.Service
             return repo.ReadById(id).Result;
         }
 
-        public async Task<Trip> Update(Trip trip)
+        public Task<Trip> Update(Trip trip)
         {
-            return await repo.Update(trip);
+            return repo.Update(trip);
         }
 
         public async void Delete(string id)

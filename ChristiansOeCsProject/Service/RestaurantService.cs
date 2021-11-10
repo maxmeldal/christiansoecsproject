@@ -26,9 +26,9 @@ namespace ChristiansOeCsProject.Service
             return repo.ReadById(id).Result;
         }
 
-        public async Task<Restaurant> Update(Restaurant restaurant)
+        public Task<Restaurant> Update(Restaurant restaurant)
         {
-            return await repo.Update(restaurant);
+            return repo.Update(restaurant);
         }
 
         public async void Delete(string id)

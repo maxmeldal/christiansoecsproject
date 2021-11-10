@@ -62,9 +62,23 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
-        public Task<Facility> Update(Facility t)
+        public async Task<Facility> Update(Facility facility)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("facilities").Document(facility.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"lat", facility.Latitude},
+                {"long", facility.Longitude},
+                {"name", facility.Name}
+            };
+
+            DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
+            if (snap.Exists)
+            {
+                await documentReference.SetAsync(data);
+            }
+
+            return facility;
         }
 
         public void Delete(string id)

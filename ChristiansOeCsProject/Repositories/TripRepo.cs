@@ -119,9 +119,38 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
-        public Task<Trip> Update(Trip t)
+        public async Task<Trip> Update(Trip trip)
         {
-            throw new NotImplementedException();
+            DocumentReference documentReference = _db.Collection("routes").Document(trip.Id);
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"name", trip.Name},
+                {"info", trip.Info},
+                {"theme", trip.Theme}
+            };
+
+            DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
+            if (snap.Exists)
+            {
+                await documentReference.SetAsync(data);
+            }
+
+            //deletes all attractions in trip
+            CollectionReference collectionReference = documentReference.Collection("attractions");
+            QuerySnapshot collSnap = await collectionReference.GetSnapshotAsync();
+            foreach (var documentSnapshot in collSnap.Documents)
+            {
+                await documentSnapshot.Reference.DeleteAsync();
+            }
+            
+            //creates new attractions for the trip
+            foreach (var tripAttraction in trip.Attractions)
+            {
+                DocumentReference docRef = collectionReference.Document(tripAttraction.Id);
+                await docRef.CreateAsync(new Dictionary<string, object>());
+            }
+
+            return trip;
         }
 
         public void Delete(string id)
