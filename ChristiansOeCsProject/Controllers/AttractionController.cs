@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
@@ -8,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
-    [ApiController]
-    [Produces("application/json")]
-    public class AttractionController : ControllerBase
+    public class AttractionController : MyControllerBase
     {
         private readonly AttractionService _attractionService;
 
@@ -20,8 +19,8 @@ namespace ChristiansOeCsProject.Controllers
         }
         
         //Http example:
-        //https://localhost:5001/api/attractions
-        [HttpGet("api/attactions")]
+        //https://localhost:5001/api/attraction/attractions
+        [HttpGet("attractions")]
         public ActionResult GetAttractions()
         {
             try
@@ -34,8 +33,8 @@ namespace ChristiansOeCsProject.Controllers
             }
         }
         //Http example:
-        //https://localhost:5001/api/facilities/8d16be31-a7ff-45ff-907d-6cbcab477c40
-        [HttpGet("api/attraction/{id}")]
+        //https://localhost:5001/api/attraction/A6AAxTP7Yjs7HehuiDAN
+        [HttpGet("{id}")]
         public ActionResult GetAttraction(string id)
         {
             try
@@ -56,14 +55,14 @@ namespace ChristiansOeCsProject.Controllers
         }
         
         //Http example:
-        //https://localhost:5001/api/create/attaction
-        [HttpPost("api/create/attaction")]
+        //https://localhost:5001/api/attraction/create
+        [HttpPost("create")]
         public async Task<ActionResult<Attraction>> Create(Attraction attraction)
         {
             return CreatedAtAction(nameof(GetAttraction), new {}, attraction);
         }
 
-        [HttpPut("api/update/attraction")]
+        [HttpPut("update")]
         public async Task<ActionResult<Attraction>> Update(Attraction attraction)
         {
             if (attraction != null)
@@ -74,7 +73,9 @@ namespace ChristiansOeCsProject.Controllers
             return NotFound();
         }
 
-        [HttpDelete("api/delete/trip/{id}")]
+        //Http example:
+        //https://localhost:5001/api/attraction/delete/A6AAxTP7Yjs7HehuiDAN
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult<Trip>> Delete(string id)
         {
             if (_attractionService.ReadById(id) != null)

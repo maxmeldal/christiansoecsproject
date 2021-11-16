@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
@@ -7,9 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ChristiansOeCsProject.Controllers
 {
-    [ApiController]
-    [Produces("application/json")]
-    public class TripController : ControllerBase
+    public class TripController : MyControllerBase
     {
         private readonly TripService _tripService;
 
@@ -19,8 +18,8 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         //Http example:
-        //https://localhost:5001/api/trips
-        [HttpGet("api/trips")]
+        //https://localhost:5001/api/trip/trips
+        [HttpGet("trips")]
         public async Task<ActionResult> GetTrips()
         {
             try
@@ -35,7 +34,7 @@ namespace ChristiansOeCsProject.Controllers
 
         //Http example:
         //https://localhost:5001/api/trip/DgXf06FNGLTODjEaOKsR
-        [HttpGet("api/trip/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Trip>> GetTrip(string id)
         {
             var trip = _tripService.ReadById(id);
@@ -50,14 +49,20 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         //Http example:
-        //https://localhost:5001/api/create/trip
-        [HttpPost("api/create/trip")]
+        //https://localhost:5001/api/trip/create/trip?blba=0dd?fdf
+        [HttpPost("create")]
         public async Task<ActionResult<Trip>> Create(Trip trip)
         {
-            return CreatedAtAction(nameof(GetTrip), new {}, trip);
+            //return CreatedAtAction(nameof(GetTrip), new {}, trip);
+            if (trip != null) 
+            {
+               _tripService.Create(trip);
+            }
+            
+            return NotFound();
         }
 
-        [HttpPut("api/update/trip")]
+        [HttpPut("update")]
         public async Task<ActionResult<Trip>> Update(Trip trip)
         {
             if (trip != null)
@@ -68,7 +73,7 @@ namespace ChristiansOeCsProject.Controllers
             return NotFound();
         }
 
-        [HttpDelete("api/delete/trip/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult<Trip>> Delete(string id)
         {
             if (_tripService.ReadById(id) != null)

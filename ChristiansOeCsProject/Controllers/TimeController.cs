@@ -1,11 +1,10 @@
-﻿using ChristiansOeCsProject.Service;
+﻿using System.Net.Mime;
+using ChristiansOeCsProject.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
-    [ApiController]
-    [Produces("application/json")]
-    public class TimeController : ControllerBase
+    public class TimeController : MyControllerBase
     {
         private readonly TimeService _timeService;
 
@@ -15,8 +14,8 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         //Http example:
-        //https://localhost:5001/api/time?distance=1.2
-        [HttpGet("api/time")]
+        //https://localhost:5001/api/time/?distance=1.2
+        [HttpGet]
         public ActionResult<double> DistanceToMinutes(double distance)
         {
             var toMinutes = _timeService.DistanceToMinutes(distance);

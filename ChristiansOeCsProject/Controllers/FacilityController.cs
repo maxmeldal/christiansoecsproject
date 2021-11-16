@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
@@ -7,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
-    [ApiController]
-    [Produces("application/json")]
-    public class FacilityController : ControllerBase
+    public class FacilityController : MyControllerBase
     {
         private readonly FacilityService _facilityService;
 
@@ -18,8 +17,8 @@ namespace ChristiansOeCsProject.Controllers
             _facilityService = facilityService;
         }
         //Http example:
-        //https://localhost:5001/api/facilities
-        [HttpGet("api/facilities")]
+        //https://localhost:5001/api/facility/facilities
+        [HttpGet("facilities")]
         public async Task<ActionResult> GetFacilities()
         {
             try
@@ -33,8 +32,8 @@ namespace ChristiansOeCsProject.Controllers
         }
 
          //Http example:
-         //https://localhost:5001/api/facilities/ED79tdWc3e82jaQhNLt5
-         [HttpGet("api/facilities/{id}")]
+         //https://localhost:5001/api/facility/ED79tdWc3e82jaQhNLt5
+         [HttpGet("{id}")]
          public async Task<ActionResult<Facility>> GetFacility(string id)
          {
              var facility =  _facilityService.ReadById(id);
@@ -50,14 +49,16 @@ namespace ChristiansOeCsProject.Controllers
          
          
          //Http example:
-         //https://localhost:5001/api/create/facility
+         //https://localhost:5001/api/facility/create
          [HttpPost("api/create/facility")]
          public async Task<ActionResult<Facility>> Create(Attraction attraction)
          {
              return CreatedAtAction(nameof(GetFacility), new {}, attraction);
          }
 
-         [HttpPut("api/update/facility")]
+         //Http example:
+         //https://localhost:5001/api/facility/update
+         [HttpPut("update")]
          public async Task<ActionResult<Facility>> Update(Facility facility)
          {
              if (facility != null)
@@ -68,7 +69,9 @@ namespace ChristiansOeCsProject.Controllers
              return NotFound();
          }
 
-         [HttpDelete("api/delete/facility/{id}")]
+         //Http example:
+         //https://localhost:5001/api/facility/delete/id
+         [HttpDelete("delete/{id}")]
          public async Task<ActionResult<Trip>> Delete(string id)
          {
              if (_facilityService.ReadById(id) != null)
