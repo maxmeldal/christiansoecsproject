@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ChristiansOeCsProject.Entities
 {
@@ -20,7 +21,7 @@ namespace ChristiansOeCsProject.Entities
             _theme = theme;
             _attractions = attractions;
         }
-        
+        [JsonConstructor]
         public Trip(string name, string info, Theme theme, List<Attraction> attractions)
         {
             _id = Convert.ToString(Guid.NewGuid());
