@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Repositories;
@@ -30,7 +31,7 @@ namespace ChristiansOeCsProject
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {
-                    opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+                    // opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
                 });
         }
 

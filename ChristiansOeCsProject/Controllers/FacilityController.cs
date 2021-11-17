@@ -50,7 +50,7 @@ namespace ChristiansOeCsProject.Controllers
          
          //Http example:
          //https://localhost:5001/api/facility/create
-         [HttpPost("api/create/facility")]
+         [HttpPost("create")]
          public async Task<ActionResult<Facility>> Create(Attraction attraction)
          {
              return CreatedAtAction(nameof(GetFacility), new {}, attraction);

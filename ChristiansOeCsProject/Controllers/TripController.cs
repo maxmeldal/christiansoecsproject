@@ -49,28 +49,38 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         //Http example:
-        //https://localhost:5001/api/trip/create/trip?blba=0dd?fdf
+        //https://localhost:5001/api/trip/create
         [HttpPost("create")]
-        public async Task<ActionResult<Trip>> Create(Trip trip)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public ActionResult<Trip> Create([FromBody] Trip trip)
         {
-            //return CreatedAtAction(nameof(GetTrip), new {}, trip);
             if (trip != null) 
             {
-               _tripService.Create(trip);
+               //_tripService.Create(trip);
+             
+               //return CreatedAtAction(nameof(GetTrip), new { id = entity.Id}, entity);
             }
             
             return NotFound();
         }
 
-        [HttpPut("update")]
-        public async Task<ActionResult<Trip>> Update(Trip trip)
+        [HttpPut("update/{id}")]
+        public async Task<ActionResult<Trip>> Update(Trip trip, string id)
         {
-            if (trip != null)
+            var existingTrip = _tripService.ReadById(id);
+            
+            if (existingTrip == null)
             {
-                await _tripService.Update(trip);
+                return NotFound();
             }
+            
+           // var updateTrip = existingTrip with
+           // {
+                
+           // }
 
-            return NotFound();
+            return NoContent();
+            
         }
 
         [HttpDelete("delete/{id}")]
