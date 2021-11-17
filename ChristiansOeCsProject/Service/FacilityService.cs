@@ -10,9 +10,9 @@ namespace ChristiansOeCsProject.Service
     {
         private FacilityRepo repo = new FacilityRepo();
 
-        public async void Create(Facility facility)
+        public Task<Facility> Create(Facility facility)
         {
-            repo.Create(facility);
+            return repo.Create(facility);
         }
 
         public async Task<List<Facility>> ReadAll()

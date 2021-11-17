@@ -10,9 +10,9 @@ namespace ChristiansOeCsProject.Service
     {
         private AttractionRepo repo = new AttractionRepo();
 
-        public async void Create(Attraction attraction)
+        public Task<Attraction> Create(Attraction attraction)
         {
-            repo.Create(attraction);
+           return repo.Create(attraction);
         }
 
         public async Task<List<Attraction>> ReadAll()

@@ -50,22 +50,40 @@ namespace ChristiansOeCsProject.Controllers
         
         
         //Http example:
-        //https://localhost:5001/api/create/restaurant
+        //https://localhost:5001/api/restaurant/create
         [HttpPost("create")]
-        public async Task<ActionResult<Restaurant>> Create(Restaurant restaurant)
+        public async Task<ActionResult<Restaurant>> Create([FromBody] Restaurant restaurant)
         {
-            return CreatedAtAction(nameof(GetRestaurant), new {}, restaurant);
+            if (restaurant == null)
+            {
+                return NotFound();
+            }
+            
+            var createdRestaurant = await _restaurantService.Create(restaurant);
+
+            return CreatedAtAction(nameof(GetRestaurant), new { id = createdRestaurant.Id}, createdRestaurant);
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<Restaurant>> Update(Restaurant restaurant)
+        public async Task<ActionResult<Restaurant>> Update(Restaurant restaurant, string id)
         {
-            if (restaurant != null)
+            var existingRestaurant = _restaurantService.ReadById(id);
+            
+            if (existingRestaurant == null)
             {
-                await _restaurantService.Update(restaurant);
+                return NotFound();
             }
+            
+            existingRestaurant.Latitude = restaurant.Latitude;
+            existingRestaurant.Longitude = restaurant.Longitude;
+            existingRestaurant.Name = restaurant.Name;
+            existingRestaurant.Url = restaurant.Url;
+            existingRestaurant.Open = restaurant.Open;
+            existingRestaurant.Close = restaurant.Close;
 
-            return NotFound();
+            await _restaurantService.Update(existingRestaurant);
+
+            return Ok();
         }
 
         [HttpDelete("delete/{id}")]

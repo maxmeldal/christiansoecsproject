@@ -10,9 +10,9 @@ namespace ChristiansOeCsProject.Service
     {
         private RestaurantRepo repo = new RestaurantRepo();
 
-        public async void Create(Restaurant restaurant)
+        public Task<Restaurant> Create(Restaurant restaurant)
         {
-            repo.Create(restaurant);
+            return repo.Create(restaurant);
         }
 
         public async Task<List<Restaurant>> ReadAll()
