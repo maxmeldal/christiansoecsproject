@@ -57,9 +57,16 @@ namespace ChristiansOeCsProject.Controllers
         //Http example:
         //https://localhost:5001/api/attraction/create
         [HttpPost("create")]
-        public async Task<ActionResult<Attraction>> Create(Attraction attraction)
+        public async Task<ActionResult<Attraction>> Create([FromBody] Attraction attraction)
         {
-            return CreatedAtAction(nameof(GetAttraction), new {}, attraction);
+            if (attraction == null)
+            {
+                return NotFound();
+            }
+
+            var createdAttraction = await _attractionService.Create(attraction);
+
+            return CreatedAtAction(nameof(GetAttraction), new {id = createdAttraction.Id}, createdAttraction);
         }
 
         [HttpPut("update")]
