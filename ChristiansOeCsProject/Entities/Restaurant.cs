@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ChristiansOeCsProject.Entities
 {
     public class Restaurant : Location
@@ -12,7 +14,7 @@ namespace ChristiansOeCsProject.Entities
             _open = open;
             _close = close;
         }
-
+        [JsonConstructor]
         public Restaurant(double latitude, double longitude, string name, string url, double open, double close) : base(latitude, longitude, name)
         {
             _url = url;

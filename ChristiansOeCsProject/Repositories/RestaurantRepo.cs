@@ -10,7 +10,7 @@ namespace ChristiansOeCsProject.Repositories
     {
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
-        public void Create(Restaurant restaurant)
+        public async Task<Restaurant> Create(Restaurant restaurant)
         {
             DocumentReference documentReference = _db.Collection("restaurants").Document(restaurant.Id);
             Dictionary<string, object> data = new Dictionary<string, object>()
@@ -22,7 +22,9 @@ namespace ChristiansOeCsProject.Repositories
                 {"open", restaurant.Open},
                 {"close", restaurant.Close}
             };
-            documentReference.CreateAsync(data);
+            await documentReference.CreateAsync(data);
+
+            return restaurant;
         }
 
         public async IAsyncEnumerable<Restaurant> ReadAll()

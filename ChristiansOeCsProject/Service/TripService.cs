@@ -11,9 +11,9 @@ namespace ChristiansOeCsProject.Service
     {
         private TripRepo repo = new TripRepo();
 
-        public async void Create(Trip trip)
+        public Task<Trip> Create(Trip trip)
         {
-            repo.Create(trip);
+            return repo.Create(trip);
         }
 
         public async Task<List<Trip>> ReadAll()

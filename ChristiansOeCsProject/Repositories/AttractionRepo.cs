@@ -10,7 +10,7 @@ namespace ChristiansOeCsProject.Repositories
     {
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
-        public void Create(Attraction attraction)
+        public async Task<Attraction> Create(Attraction attraction)
         {
             DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
             Dictionary<string, object> data = new Dictionary<string, object>()
@@ -19,7 +19,9 @@ namespace ChristiansOeCsProject.Repositories
                 {"long", attraction.Longitude},
                 {"name", attraction.Name}
             };
-            documentReference.CreateAsync(data);
+            await documentReference.CreateAsync(data);
+
+            return attraction;
         }
 
         public async IAsyncEnumerable<Attraction> ReadAll()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -51,19 +52,20 @@ namespace ChristiansOeCsProject.Controllers
         //Http example:
         //https://localhost:5001/api/trip/create
         [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<Trip> Create([FromBody] Trip trip)
+        public async Task<ActionResult<Trip>> Create([FromBody] Trip trip)
         {
-            if (trip != null) 
+            if (trip == null)
             {
-               //_tripService.Create(trip);
-             
-               //return CreatedAtAction(nameof(GetTrip), new { id = entity.Id}, entity);
+                return NotFound();
             }
             
-            return NotFound();
+            var createdTrip = await _tripService.Create(trip);
+
+            return CreatedAtAction(nameof(GetTrip), new { id = createdTrip.Id}, createdTrip);
         }
 
+        //Http example:
+        //https://localhost:5001/api/trip/update/c5f4c506-5ee5-49e0-ac58-361991cad6c1
         [HttpPut("update/{id}")]
         public async Task<ActionResult<Trip>> Update(Trip trip, string id)
         {
@@ -74,12 +76,14 @@ namespace ChristiansOeCsProject.Controllers
                 return NotFound();
             }
             
-           // var updateTrip = existingTrip with
-           // {
-                
-           // }
+            existingTrip.Name = trip.Name;
+            existingTrip.Info = trip.Info;
+            existingTrip.Theme = trip.Theme;
+            existingTrip.Attractions = trip.Attractions;
 
-            return NoContent();
+            await _tripService.Update(existingTrip);
+
+            return Ok();
             
         }
 

@@ -5,7 +5,7 @@ namespace ChristiansOeCsProject.Repositories
 {
     public interface ICRUDRepo<T>
     {
-        void Create(T t);
+        Task<T> Create(T t);
         IAsyncEnumerable<T> ReadAll();
         Task<T> ReadById(string id);
 

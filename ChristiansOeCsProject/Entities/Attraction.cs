@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json.Serialization;
 
 namespace ChristiansOeCsProject.Entities
 {
@@ -8,7 +9,7 @@ namespace ChristiansOeCsProject.Entities
         public Attraction(string id, double latitiude, double longtitude, string name) : base(id, latitiude, longtitude, name)
         {
         }
-
+        [JsonConstructor]
         public Attraction(double latitude, double longitude, string name) : base(latitude, longitude, name)
         {
         }
