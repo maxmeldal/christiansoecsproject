@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'csrestapp'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_414679B0539B47A2970D67BE5AE07E4A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2D6DCC1A383D42A0BC6ECB5FE5BDA58F }}
           package: .
