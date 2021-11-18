@@ -20,7 +20,7 @@ namespace ChristiansOeCsProject.Controllers
         
         //Http example:
         //https://localhost:5001/api/attraction/attractions
-        [HttpGet("attractionss")]
+        [HttpGet("attractions")]
         public ActionResult GetAttractions()
         {
             try
