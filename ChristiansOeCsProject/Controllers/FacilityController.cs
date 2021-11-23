@@ -67,23 +67,15 @@ namespace ChristiansOeCsProject.Controllers
          }
          //Http example:
          //https://localhost:5001/api/facility/update
-         [HttpPut("update{id}")]
-         public async Task<ActionResult<Facility>> Update(Facility facility, string id)
+         [HttpPut("update")]
+         public async Task<ActionResult<Facility>> Update(Facility facility)
          {
-             var existingFacility = _facilityService.ReadById(id);
-
-             if (existingFacility ==  null)
+             if (facility != null)
              {
-                 return NotFound();
+                 return Ok(await _facilityService.Update(facility));
              }
-             existingFacility.Latitude = facility.Latitude;
-             existingFacility.Longitude = facility.Longitude;
-             existingFacility.Name = facility.Name;
-            
 
-             await _facilityService.Update(existingFacility);
-
-             return Ok();
+             return NotFound();
          }
 
          //Http example:

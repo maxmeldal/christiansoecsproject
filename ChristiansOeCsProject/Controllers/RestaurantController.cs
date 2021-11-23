@@ -65,25 +65,14 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<Restaurant>> Update(Restaurant restaurant, string id)
+        public async Task<ActionResult<Restaurant>> Update(Restaurant restaurant)
         {
-            var existingRestaurant = _restaurantService.ReadById(id);
-            
-            if (existingRestaurant == null)
+            if (restaurant != null)
             {
-                return NotFound();
+                return Ok(await _restaurantService.Update(restaurant));
             }
-            
-            existingRestaurant.Latitude = restaurant.Latitude;
-            existingRestaurant.Longitude = restaurant.Longitude;
-            existingRestaurant.Name = restaurant.Name;
-            existingRestaurant.Url = restaurant.Url;
-            existingRestaurant.Open = restaurant.Open;
-            existingRestaurant.Close = restaurant.Close;
 
-            await _restaurantService.Update(existingRestaurant);
-
-            return Ok();
+            return NotFound();
         }
 
         [HttpDelete("delete/{id}")]

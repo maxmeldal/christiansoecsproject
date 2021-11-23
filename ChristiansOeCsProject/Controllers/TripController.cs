@@ -65,26 +65,16 @@ namespace ChristiansOeCsProject.Controllers
         }
 
         //Http example:
-        //https://localhost:5001/api/trip/update/c5f4c506-5ee5-49e0-ac58-361991cad6c1
-        [HttpPut("update/{id}")]
-        public async Task<ActionResult<Trip>> Update(Trip trip, string id)
+        //https://localhost:5001/api/trip/update
+        [HttpPut("update")]
+        public async Task<ActionResult<Trip>> Update(Trip trip)
         {
-            var existingTrip = _tripService.ReadById(id);
-            
-            if (existingTrip == null)
+            if (trip != null)
             {
-                return NotFound();
+                return Ok(await _tripService.Update(trip));
             }
-            
-            existingTrip.Name = trip.Name;
-            existingTrip.Info = trip.Info;
-            existingTrip.Theme = trip.Theme;
-            existingTrip.Attractions = trip.Attractions;
 
-            await _tripService.Update(existingTrip);
-
-            return Ok();
-            
+            return NotFound();
         }
 
         [HttpDelete("delete/{id}")]
