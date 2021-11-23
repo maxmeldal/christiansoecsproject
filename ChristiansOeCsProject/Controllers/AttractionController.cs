@@ -69,15 +69,23 @@ namespace ChristiansOeCsProject.Controllers
             return CreatedAtAction(nameof(GetAttraction), new {id = createdAttraction.Id}, createdAttraction);
         }
 
-        [HttpPut("update")]
-        public async Task<ActionResult<Attraction>> Update(Attraction attraction)
+        [HttpPut("update{id}")]
+        public async Task<ActionResult<Attraction>> Update(Attraction attraction, string id)
         {
-            if (attraction != null)
+            var existingAttraction = _attractionService.ReadById(id);
+
+            if (existingAttraction == null)
             {
-                await _attractionService.Update(attraction);
+                return NotFound();
             }
 
-            return NotFound();
+            existingAttraction.Latitude = attraction.Latitude;
+            existingAttraction.Longitude = attraction.Longitude;
+            existingAttraction.Name = attraction.Name;
+
+            await _attractionService.Update(attraction);
+
+            return Ok();
         }
 
         //Http example:

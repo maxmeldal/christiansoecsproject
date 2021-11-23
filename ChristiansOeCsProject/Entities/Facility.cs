@@ -1,11 +1,14 @@
+using Newtonsoft.Json;
+
 namespace ChristiansOeCsProject.Entities
 {
     public class Facility : Location
     {
-        public Facility(string id, double latitiude, double longitude, string name) : base(id, latitiude, longitude, name)
+        public Facility(string id, double latitude, double longitude, string name) : base(id, latitude, longitude, name)
         {
         }
-
+        
+        [JsonConstructor]
         public Facility(double latitude, double longitude, string name) : base(latitude, longitude, name)
         {
         }

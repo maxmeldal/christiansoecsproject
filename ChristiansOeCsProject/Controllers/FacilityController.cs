@@ -50,23 +50,40 @@ namespace ChristiansOeCsProject.Controllers
          
          //Http example:
          //https://localhost:5001/api/facility/create
+         //Http example:
+         //https://localhost:5001/api/facility/create
          [HttpPost("create")]
-         public async Task<ActionResult<Facility>> Create(Attraction attraction)
+         public async Task<ActionResult<Facility>> Create([FromBody] Facility facility)
          {
-             return CreatedAtAction(nameof(GetFacility), new {}, attraction);
-         }
+             if (facility == null)
+             { 
 
+                 return NotFound();
+             }
+             var createFacility = await _facilityService.Create(facility);
+
+
+             return CreatedAtAction(nameof(GetFacility), new {id = createFacility.Id}, facility);
+         }
          //Http example:
          //https://localhost:5001/api/facility/update
-         [HttpPut("update")]
-         public async Task<ActionResult<Facility>> Update(Facility facility)
+         [HttpPut("update{id}")]
+         public async Task<ActionResult<Facility>> Update(Facility facility, string id)
          {
-             if (facility != null)
-             {
-                 await _facilityService.Update(facility);
-             }
+             var existingFacility = _facilityService.ReadById(id);
 
-             return NotFound();
+             if (existingFacility ==  null)
+             {
+                 return NotFound();
+             }
+             existingFacility.Latitude = facility.Latitude;
+             existingFacility.Longitude = facility.Longitude;
+             existingFacility.Name = facility.Name;
+            
+
+             await _facilityService.Update(existingFacility);
+
+             return Ok();
          }
 
          //Http example:
