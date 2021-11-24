@@ -8,7 +8,6 @@ namespace ChristiansOeCsProject.Repositories
 {
     public class FacilityRepo : ICRUDRepo<Facility>
     {
-
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
         public async Task<Facility> Create(Facility facility)

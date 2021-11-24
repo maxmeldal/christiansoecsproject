@@ -38,14 +38,6 @@ namespace ChristiansOeCsProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            /*
-            var tripService = new TripService();
-            var attractionService = new AttractionService();
-            var attractions = attractionService.ReadAll().Result;
-            Trip trip = new Trip("New Trip", "Historic", Theme.History, attractions);
-            tripService.Create(trip);
-            */
-            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
