@@ -8,7 +8,7 @@ namespace ChristiansOeCsProject.Entities
         private double _open;
         private double _close;
 
-        [JsonConstructor]
+        
         public Restaurant(string id, double latitiude, double longtitude, string name, string url, double open, double close) : base(id, latitiude, longtitude, name)
         {
             _url = url;
@@ -20,6 +20,10 @@ namespace ChristiansOeCsProject.Entities
             _url = url;
             _open = open;
             _close = close;
+        }
+        [JsonConstructor]
+        public Restaurant()
+        {
         }
 
         public string Url

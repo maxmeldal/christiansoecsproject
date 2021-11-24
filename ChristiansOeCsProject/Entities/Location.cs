@@ -25,6 +25,10 @@ namespace ChristiansOeCsProject.Entities
             _name = name;
         }
 
+        protected Location()
+        {
+        }
+
         public string Id
         {
             get => _id;

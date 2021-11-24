@@ -4,13 +4,18 @@ namespace ChristiansOeCsProject.Entities
 {
     public class Facility : Location
     {
-        [JsonConstructor]
+        
         public Facility(string id, double latitude, double longitude, string name) : base(id, latitude, longitude, name)
         {
         }
         
         
         public Facility(double latitude, double longitude, string name) : base(latitude, longitude, name)
+        {
+        }
+
+        [JsonConstructor]
+        public Facility()
         {
         }
 

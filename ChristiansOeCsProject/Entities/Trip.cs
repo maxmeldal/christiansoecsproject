@@ -30,6 +30,10 @@ namespace ChristiansOeCsProject.Entities
             _theme = theme;
             _attractions = attractions;
         }
+        [JsonConstructor]
+        public Trip()
+        {
+        }
         
 
         public void AddAttraction(Attraction attraction)
