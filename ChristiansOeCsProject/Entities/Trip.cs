@@ -13,6 +13,7 @@ namespace ChristiansOeCsProject.Entities
         private Theme _theme;
         private List<Attraction> _attractions;
 
+        [JsonConstructor]
         public Trip(string id, string name, string info, Theme theme, List<Attraction> attractions)
         {
             _id = id;
@@ -21,7 +22,6 @@ namespace ChristiansOeCsProject.Entities
             _theme = theme;
             _attractions = attractions;
         }
-        [JsonConstructor]
         public Trip(string name, string info, Theme theme, List<Attraction> attractions)
         {
             _id = Convert.ToString(Guid.NewGuid());

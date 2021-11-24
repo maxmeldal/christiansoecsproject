@@ -63,7 +63,7 @@ namespace ChristiansOeCsProject.Controllers
              var createFacility = await _facilityService.Create(facility);
 
 
-             return CreatedAtAction(nameof(GetFacility), new {id = createFacility.Id}, facility);
+             return CreatedAtAction(nameof(GetFacility), new {id = createFacility.Id}, createFacility);
          }
          //Http example:
          //https://localhost:5001/api/facility/update

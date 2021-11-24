@@ -5,7 +5,7 @@ namespace ChristiansOeCsProject.Entities
 {
     public class Attraction : Location
     {
-        
+        //[JsonConstructor]
         public Attraction(string id, double latitiude, double longtitude, string name) : base(id, latitiude, longtitude, name)
         {
         }
