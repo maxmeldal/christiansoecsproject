@@ -48,18 +48,22 @@ namespace ChristiansOeCsProject.Repositories
                     var dict = docsnap.ToDictionary();
                     var name = Convert.ToString(dict["name"]);
                     var info = Convert.ToString(dict["info"]);
+                    var themeId = Convert.ToInt32(dict["theme"]);
                     Theme theme;
-                    if (dict["theme"].Equals("Nature"))
+                    if (themeId == 1)
                     {
                         theme = Theme.Nature;
                     } 
-                    else if (dict["theme"].Equals("War"))
+                    else if (themeId == 2)
+                    {
+                        theme = Theme.History;
+                    }
+                    else if (themeId == 3)
                     {
                         theme = Theme.War;
                     }
-                    else
-                    {
-                        theme = Theme.History;
+                    else {
+                        theme = Theme.None;
                     }
 
                     var attractions = new List<Attraction>();

@@ -4,6 +4,7 @@
     {
         Nature = 1,
         History = 2,
-        War = 3
+        War = 3,
+        None = 4
     }
 }
