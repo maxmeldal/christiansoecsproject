@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using Google.Cloud.Firestore;
@@ -17,7 +20,9 @@ namespace ChristiansOeCsProject.Repositories
             {
                 {"lat", attraction.Latitude},
                 {"long", attraction.Longitude},
-                {"name", attraction.Name}
+                {"name", attraction.Name},
+                {"video", attraction.Video},
+                {"audio", attraction.Audio}
             };
             await documentReference.CreateAsync(data);
 
@@ -40,7 +45,13 @@ namespace ChristiansOeCsProject.Repositories
                     var longi = Convert.ToDouble(dict["long"]);
                     var name = Convert.ToString(dict["name"]);
                     
-                    yield return new Attraction(id, lat, longi, name);
+                    var videoBlob = (Blob) dict["video"];
+                    var video = videoBlob.ByteString.ToByteArray();
+                
+                    var audioBlob = (Blob) dict["audio"];
+                    var audio = audioBlob.ByteString.ToByteArray();
+                    
+                    yield return new Attraction(id, lat, longi, name, video, audio);
                 }
             }
         }
@@ -56,7 +67,30 @@ namespace ChristiansOeCsProject.Repositories
                 var lat = Convert.ToDouble(dict["lat"]);
                 var longi = Convert.ToDouble(dict["long"]);
                 var name = Convert.ToString(dict["name"]);
-                return new Attraction(id, lat, longi, name);
+
+                byte[] video;
+                if (dict["video"] != null)
+                {
+                    var videoBlob = (Blob) dict["video"];
+                    video = videoBlob.ByteString.ToByteArray();
+                }
+                else
+                {
+                    video = null;
+                }
+
+                byte[] audio;
+                if (dict["audio"] != null)
+                {
+                    var audioBlob = (Blob) dict["audio"];
+                    audio = audioBlob.ByteString.ToByteArray();  
+                }
+                else
+                {
+                    audio = null;
+                }
+
+                return new Attraction(id, lat, longi, name, video, audio);
             }
 
             return null;
@@ -69,7 +103,9 @@ namespace ChristiansOeCsProject.Repositories
             {
                 {"lat", attraction.Latitude},
                 {"long", attraction.Longitude},
-                {"name", attraction.Name}
+                {"name", attraction.Name},
+                {"video", attraction.Video},
+                {"audio", attraction.Audio}
             };
 
             DocumentSnapshot snap = await documentReference.GetSnapshotAsync();

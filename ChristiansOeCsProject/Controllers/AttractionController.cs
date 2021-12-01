@@ -63,7 +63,7 @@ namespace ChristiansOeCsProject.Controllers
             {
                 return NotFound();
             }
-
+            
             var createdAttraction = await _attractionService.Create(attraction);
 
             return CreatedAtAction(nameof(GetAttraction), new {id = createdAttraction.Id}, createdAttraction);
