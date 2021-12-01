@@ -45,11 +45,27 @@ namespace ChristiansOeCsProject.Repositories
                     var longi = Convert.ToDouble(dict["long"]);
                     var name = Convert.ToString(dict["name"]);
                     
-                    var videoBlob = (Blob) dict["video"];
-                    var video = videoBlob.ByteString.ToByteArray();
-                
-                    var audioBlob = (Blob) dict["audio"];
-                    var audio = audioBlob.ByteString.ToByteArray();
+                    byte[] video;
+                    if (dict["video"] != null)
+                    {
+                        var videoBlob = (Blob) dict["video"];
+                        video = videoBlob.ByteString.ToByteArray();
+                    }
+                    else
+                    {
+                        video = null;
+                    }
+
+                    byte[] audio;
+                    if (dict["audio"] != null)
+                    {
+                        var audioBlob = (Blob) dict["audio"];
+                        audio = audioBlob.ByteString.ToByteArray();  
+                    }
+                    else
+                    {
+                        audio = null;
+                    }
                     
                     yield return new Attraction(id, lat, longi, name, video, audio);
                 }

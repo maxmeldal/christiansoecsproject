@@ -41,8 +41,12 @@ namespace ChristiansOeCsProject
             //var attraction = new Attraction(1, 1, "new", new byte[101], new byte[010]);
             var attractionService = new AttractionService();
             //attractionService.Create(attraction);
-            var attraction = attractionService.ReadById("id5");
-            Console.WriteLine(attraction);
+            var attractions = attractionService.ReadAll();
+            foreach (var attraction in attractions.Result)
+            {
+                Console.WriteLine(attraction);
+            }
+
             {
                 app.UseDeveloperExceptionPage();
             }
