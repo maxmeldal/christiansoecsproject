@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ namespace ChristiansOeCsProject.Repositories
     {
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
         private readonly FirebaseStorage _storage = FirebaseConnection.GetStorage();
+        private readonly WebClient _webclient = new System.Net.WebClient();
+
 
         public async Task<Attraction> Create(Attraction attraction)
         {
@@ -46,37 +50,41 @@ namespace ChristiansOeCsProject.Repositories
                     var longi = Convert.ToDouble(dict["long"]);
                     var name = Convert.ToString(dict["name"]);
                     
-                    // byte[] video;
-                    // if (dict["video"] != null)
-                    // {
-                    //     var videoBlob = (Blob) dict["video"];
-                    //     video = videoBlob.ByteString.ToByteArray();
-                    // }
-                    // else
-                    // {
-                    //     video = null;
-                    // }
-                    //
-                    // byte[] audio;
-                    // if (dict["audio"] != null)
-                    // {
-                    //     var audioBlob = (Blob) dict["audio"];
-                    //     audio = audioBlob.ByteString.ToByteArray();  
-                    // }
-                    // else
-                    // {
-                    //     audio = null;
-                    // }
-                    
-                    yield return new Attraction(id, lat, longi, name, "video", "audio");
+                    string video = null;
+                    try
+                    {
+                        var videoRef = _storage.Child(id).Child("video.mp4");
+                        var videoUrl = await videoRef.GetDownloadUrlAsync();
+                        var videoBytes = _webclient.DownloadData(videoUrl);
+                        video = Convert.ToBase64String(videoBytes);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
+                    string audio = null;
+                    try
+                    {
+                        var audioRef = _storage.Child(id).Child("audio");
+                        var audioUrl = await audioRef.GetDownloadUrlAsync();
+                        var audioBytes = _webclient.DownloadData(audioUrl);
+                        audio = Convert.ToBase64String(audioBytes);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
+                    yield return new Attraction(id, lat, longi, name, video, audio);
                 }
             }
         }
 
         public async Task<Attraction> ReadById(string id)
         {
-            var DocRef = _db.Collection("attractions").Document(id);
-            var docsnap = await DocRef.GetSnapshotAsync();
+            var docRef = _db.Collection("attractions").Document(id);
+            var docsnap = await docRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
             {
@@ -84,33 +92,35 @@ namespace ChristiansOeCsProject.Repositories
                 var lat = Convert.ToDouble(dict["lat"]);
                 var longi = Convert.ToDouble(dict["long"]);
                 var name = Convert.ToString(dict["name"]);
+                
 
-                // byte[] video;
-                // if (dict["video"] != null)
-                // {
-                //     var videoBlob = (Blob) dict["video"];
-                //     video = videoBlob.ByteString.ToByteArray();
-                // }
-                // else
-                // {
-                //     video = null;
-                // }
-                //
-                // byte[] audio;
-                // if (dict["audio"] != null)
-                // {
-                //     var audioBlob = (Blob) dict["audio"];
-                //     audio = audioBlob.ByteString.ToByteArray();  
-                // }
-                // else
-                // {
-                //     audio = null;
-                // }
+                string video = null;
+                try
+                {
+                    var videoRef = _storage.Child(id).Child("video.mp4");
+                    var videoUrl = await videoRef.GetDownloadUrlAsync();
+                    var videoBytes = _webclient.DownloadData(videoUrl);
+                    video = Convert.ToBase64String(videoBytes);
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
 
-                //var path = "gs://christiansoe-4889c.appspot.com/" + id;
-                //var video = _storage.Child(path)
+                string audio = null;
+                try
+                {
+                    var audioRef = _storage.Child(id).Child("audio");
+                    var audioUrl = await audioRef.GetDownloadUrlAsync();
+                    var audioBytes = _webclient.DownloadData(audioUrl);
+                    audio = Convert.ToBase64String(audioBytes);
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
 
-                return new Attraction(id, lat, longi, name, "video", "audio");
+                return new Attraction(id, lat, longi, name, video, audio);
             }
 
             return null;
@@ -145,7 +155,7 @@ namespace ChristiansOeCsProject.Repositories
             return attraction;
         }
 
-        public void SetVideo(String id, string video)
+        private void SetVideo(string id, string video)
         {
             var videoArr = Encoding.UTF8.GetBytes(video);
             
@@ -153,10 +163,10 @@ namespace ChristiansOeCsProject.Repositories
             stream.Write(videoArr, 0, videoArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).PutAsync(stream);
+            _storage.Child(id).Child("video.mp4").PutAsync(stream);
         }
 
-        public void SetAudio(string id, string audio)
+        private void SetAudio(string id, string audio)
         {
             var audioArr = Encoding.UTF8.GetBytes(audio);
             
@@ -164,13 +174,30 @@ namespace ChristiansOeCsProject.Repositories
             stream.Write(audioArr, 0, audioArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).PutAsync(stream);
+            _storage.Child(id).Child("audio").PutAsync(stream);
         }
 
         public void Delete(string id)
         {
             DocumentReference documentReference = _db.Collection("attractions").Document(id);
             documentReference.DeleteAsync();
+            try
+            {
+                _storage.Child(id).Child("video.mp4").DeleteAsync();
+
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
+            try
+            {
+                _storage.Child(id).Child("audio.mp4").DeleteAsync();
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
         }
     }
 }
