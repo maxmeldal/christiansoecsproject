@@ -163,7 +163,7 @@ namespace ChristiansOeCsProject.Repositories
             stream.Write(videoArr, 0, videoArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).Child("video.mp4").PutAsync(stream);
+            _storage.Child(id).Child("video").PutAsync(stream);
         }
 
         private void SetAudio(string id, string audio)
@@ -174,7 +174,7 @@ namespace ChristiansOeCsProject.Repositories
             stream.Write(audioArr, 0, audioArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).Child("audio.mp3").PutAsync(stream);
+            _storage.Child(id).Child("audio").PutAsync(stream);
         }
 
         public void Delete(string id)
@@ -183,7 +183,7 @@ namespace ChristiansOeCsProject.Repositories
             documentReference.DeleteAsync();
             try
             {
-                _storage.Child(id).Child("video.mp4").DeleteAsync();
+                _storage.Child(id).Child("video").DeleteAsync();
 
             }
             catch (Exception e)
@@ -192,7 +192,7 @@ namespace ChristiansOeCsProject.Repositories
             }
             try
             {
-                _storage.Child(id).Child("audio.mp3").DeleteAsync();
+                _storage.Child(id).Child("audio").DeleteAsync();
             }
             catch (Exception e)
             {
