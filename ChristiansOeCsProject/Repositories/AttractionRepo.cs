@@ -66,7 +66,7 @@ namespace ChristiansOeCsProject.Repositories
                     string audio = null;
                     try
                     {
-                        var audioRef = _storage.Child(id).Child("audio");
+                        var audioRef = _storage.Child(id).Child("audio.mp3");
                         var audioUrl = await audioRef.GetDownloadUrlAsync();
                         var audioBytes = _webclient.DownloadData(audioUrl);
                         audio = Convert.ToBase64String(audioBytes);
@@ -110,7 +110,7 @@ namespace ChristiansOeCsProject.Repositories
                 string audio = null;
                 try
                 {
-                    var audioRef = _storage.Child(id).Child("audio");
+                    var audioRef = _storage.Child(id).Child("audio.mp3");
                     var audioUrl = await audioRef.GetDownloadUrlAsync();
                     var audioBytes = _webclient.DownloadData(audioUrl);
                     audio = Convert.ToBase64String(audioBytes);
@@ -174,7 +174,7 @@ namespace ChristiansOeCsProject.Repositories
             stream.Write(audioArr, 0, audioArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).Child("audio").PutAsync(stream);
+            _storage.Child(id).Child("audio.mp3").PutAsync(stream);
         }
 
         public void Delete(string id)
@@ -192,7 +192,7 @@ namespace ChristiansOeCsProject.Repositories
             }
             try
             {
-                _storage.Child(id).Child("audio.mp4").DeleteAsync();
+                _storage.Child(id).Child("audio.mp3").DeleteAsync();
             }
             catch (Exception e)
             {
