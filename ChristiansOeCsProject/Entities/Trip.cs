@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace ChristiansOeCsProject.Entities
 {
+    /**
+     * Trip klassen er ansvarlig for at holde information vedr. en route
+     */
     public class Trip
     {
         private string _id;
@@ -33,18 +36,6 @@ namespace ChristiansOeCsProject.Entities
         [JsonConstructor]
         public Trip()
         {
-        }
-        
-
-        public void AddAttraction(Attraction attraction)
-        {
-            _attractions.Add(attraction);
-        }
-
-        public void RemoveAttraction(string id)
-        {
-            int index = _attractions.FindIndex(a => a.Id == id);
-            _attractions.RemoveAt(index);
         }
 
         public string Id
@@ -75,16 +66,6 @@ namespace ChristiansOeCsProject.Entities
         {
             get => _attractions;
             set => _attractions = value;
-        }
-
-        public override string ToString()
-        {
-            var str = "";
-            foreach (var attractionStr in Attractions)
-            {
-                str += attractionStr + " ";
-            }
-            return $"id: {Id}, name: {Name}, name: {Info}, theme: {Theme}, attractions: [{str}]";
         }
     }
 }

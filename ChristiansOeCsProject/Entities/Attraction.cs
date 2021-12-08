@@ -1,14 +1,13 @@
-using System;
-using System.Buffers.Text;
-using System.IO;
-//using Newtonsoft.Json;
-
 using System.Text.Json.Serialization;
 
 namespace ChristiansOeCsProject.Entities
 {
+    /**
+     * Attraction nedarver fra location og implementere andre nødvendige getters og setters, samt konstruktors
+     */
     public class Attraction : Location
     {
+        // video og audio attributter gemmer Base64 representationer af bytes for en fil
         private string _video;
         private string _audio;
         public Attraction(string id, double latitiude, double longtitude, string name, string video, string audio) : base(id, latitiude, longtitude, name)
@@ -21,6 +20,7 @@ namespace ChristiansOeCsProject.Entities
             _video = video;
             _audio = audio;
         }
+        
         [JsonConstructor]
         public Attraction()
         {

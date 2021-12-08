@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace ChristiansOeCsProject.Entities
 {
+    /**
+     * Attraction nedarver fra location og implementere andre nødvendige getters og setters, samt konstruktors
+     */
     public class Restaurant : Location
     {
         private string _url;
@@ -42,10 +45,6 @@ namespace ChristiansOeCsProject.Entities
         {
             get => _close;
             set => _close = value;
-        }
-        public override string ToString()
-        {
-            return $"id: {Id}, lat: {Latitude}, long: {Longitude}, name: {Name}, url: {Url}, open: {Open}-{Close}";
         }
     }
 }

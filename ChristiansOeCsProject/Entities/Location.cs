@@ -2,6 +2,14 @@ using System;
 
 namespace ChristiansOeCsProject.Entities
 {
+    /**
+     * Abstrakt klasse skal nedarbes af all klasser der har en fysisk location
+     *
+     * 1. constructor tager id, i tilfælde af at et objekt skal opdateres og når man skal hente fra database
+     * 2. constructor bruges når der skal oprettes objekter, så de automatisk får tildelt et id
+     * 3. contructor (tom) er en Json contructor som rest bruger til at oprette et objekt,
+     * og så efterfølgende kalder getters og setters der hvor den kan
+     */
     public abstract class Location
     {
         private string _id;
