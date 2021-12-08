@@ -117,7 +117,9 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     string id = docsnap.Id;
-                    
+                    yield return ReadById(id).Result;
+
+                    /*
                     Dictionary<string, object> dict = docsnap.ToDictionary();
                     double lat = Convert.ToDouble(dict["lat"]);
                     double longi = Convert.ToDouble(dict["long"]);
@@ -150,6 +152,7 @@ namespace ChristiansOeCsProject.Repositories
                     }
 
                     yield return new Attraction(id, lat, longi, name, video, audio);
+                    */
                 }
             }
         }

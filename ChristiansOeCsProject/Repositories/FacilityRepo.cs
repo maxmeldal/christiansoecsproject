@@ -72,13 +72,16 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     string id = docsnap.Id;
-                    
+                    yield return ReadById(id).Result;
+
+                    /*
                     Dictionary<string, object> dict = docsnap.ToDictionary();
                     double lat = Convert.ToDouble(dict["lat"]);
                     double longi = Convert.ToDouble(dict["long"]);
                     string name = Convert.ToString(dict["name"]);
                     
                     yield return new Facility(id, lat, longi, name);
+                    */
                 }
             }
         }
