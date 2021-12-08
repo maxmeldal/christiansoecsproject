@@ -20,19 +20,13 @@ namespace ChristiansOeCsProject
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //opretter en instance scope for hver http request
             services.AddScoped<FacilityService>();
             services.AddScoped<RestaurantService>();
             services.AddScoped<TripService>();
             services.AddScoped<AttractionService>();
             services.AddScoped<DistanceService>();
-            services.AddScoped<TimeService>();
             services.AddControllers();
-            
-            services.AddMvc()
-                .AddJsonOptions(opt =>
-                {
-                    // opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

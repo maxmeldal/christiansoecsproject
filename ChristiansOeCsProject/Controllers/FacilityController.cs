@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
@@ -8,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChristiansOeCsProject.Controllers
 {
+    /**
+     * Denne klasse er en rest service der anvender construktor injektion
+     * Alle metoder laver HTTP request: GET, POST, DELETE og PUT og retunere tilpassende status koder 
+     */
     public class FacilityController : MyControllerBase
     {
         private readonly FacilityService _facilityService;
@@ -16,10 +19,16 @@ namespace ChristiansOeCsProject.Controllers
         {
             _facilityService = facilityService;
         }
-        //Http example:
-        //https://localhost:5001/api/facility/facilities
+        
+        /**
+         * Denne metode returnere enten status koden 200 via Ok() og giver en faciliteter i et JSON format, eller status koden 500 hvis den fejler
+         * 
+         * Http example:
+         * https://localhost:5001/api/facility/facilities
+         * https://csrestapp.azurewebsites.net/api/facility/facilities (server)
+         */
         [HttpGet("facilities")]
-        public async Task<ActionResult> GetFacilities()
+        public ActionResult GetFacilities()
         {
             try
             {
@@ -31,12 +40,18 @@ namespace ChristiansOeCsProject.Controllers
             }
         }
 
-         //Http example:
-         //https://localhost:5001/api/facility/ED79tdWc3e82jaQhNLt5
-         [HttpGet("{id}")]
-         public async Task<ActionResult<Facility>> GetFacility(string id)
+        /**
+         * Denne metode returnere enten status koden 200 via Ok() og giver en facilitet i et JSON format, eller status koden 404 hvis faciliteten med det id ikke eksistere
+         * Hvis det hele fejler retunere den status koden 500
+         * 
+         * Http example:
+         * https://localhost:5001/api/facility/id (lokalt)
+         * https://csrestapp.azurewebsites.net/api/facility/id (server)
+         */
+        [HttpGet("{id}")]
+         public ActionResult<Facility> GetFacility(string id)
          {
-             var facility =  _facilityService.ReadById(id);
+             Facility facility =  _facilityService.ReadById(id);
         
              if (facility == null)
              {
@@ -47,12 +62,15 @@ namespace ChristiansOeCsProject.Controllers
              return Ok(facility);
          }
          
-         
-         //Http example:
-         //https://localhost:5001/api/facility/create
-         //Http example:
-         //https://localhost:5001/api/facility/create
-         [HttpPost("create")]
+        /**
+         * Denne metode returnere enten status koden 201 hvis facilitet bliver oprettet, eller status koden 404 hvis den facilitet den får med er null
+         * Metoden udføres asynkront så user operations kan fortsætte
+         * 
+         * Http example:
+         * https://localhost:5001/api/facility/create (lokalt)
+         * https://csrestapp.azurewebsites.net/api/facility/create (server)
+         */
+        [HttpPost("create")]
          public async Task<ActionResult<Facility>> Create([FromBody] Facility facility)
          {
              if (facility == null)
@@ -60,14 +78,21 @@ namespace ChristiansOeCsProject.Controllers
 
                  return NotFound();
              }
-             var createFacility = await _facilityService.Create(facility);
+             Facility createFacility = await _facilityService.Create(facility);
 
 
              return CreatedAtAction(nameof(GetFacility), new {id = createFacility.Id}, createFacility);
          }
-         //Http example:
-         //https://localhost:5001/api/facility/update
-         [HttpPut("update")]
+        
+        /**
+         * Denne metode returnere et updateret facilitet objekt og giver status koden 200 via Ok() metoden, eller status koden 404 hvis den facilitet den får med er null
+         * Metoden udføres asynkront så user operations kan fortsætte
+         * 
+         * Http example:
+         * https://localhost:5001/api/facility/update (lokalt)
+         * https://csrestapp.azurewebsites.net/api/facility/update (server)
+         */
+        [HttpPut("update")]
          public async Task<ActionResult<Facility>> Update(Facility facility)
          {
              if (facility != null)
@@ -77,11 +102,16 @@ namespace ChristiansOeCsProject.Controllers
 
              return NotFound();
          }
-
-         //Http example:
-         //https://localhost:5001/api/facility/delete/id
-         [HttpDelete("delete/{id}")]
-         public async Task<ActionResult<Trip>> Delete(string id)
+        
+        /**
+         * Denne metode sletter en facilitet ud fra et bestemt id, eller returnere status koden 404 hvis faciliteten ikke eksistere
+         * 
+         * Http example:
+         * https://localhost:5001/api/facility/delete/id (lokalt)
+         * https://csrestapp.azurewebsites.net/api/facility/delete/id (server)
+         */
+        [HttpDelete("delete/{id}")]
+         public ActionResult<Trip> Delete(string id)
          {
              if (_facilityService.ReadById(id) != null)
              {
