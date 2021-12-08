@@ -4,6 +4,13 @@ using Google.Cloud.Firestore;
 
 namespace ChristiansOeCsProject.Repositories
 {
+    /**
+     * FirebaseConnection klassen benytter Christiansoe-Firebase.json filen til at oprette forbindelse til Firebase
+     * Klassen har to static attributter som sikrer at hvis der en gang før er oprettet forbindelse, så bliver der ikke gjort det igen,
+     * men der bliver bare brugt den samme forbindelse som før
+     *
+     * De to static metoder er ansvarlig for at returnere hhv. FirestoreDb object og FirebaseStorage object
+     */
     public class FirebaseConnection
     {
         private static FirestoreDb _db;

@@ -4,15 +4,25 @@ using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using ChristiansOeCsProject.Service;
 using Google.Cloud.Firestore;
-using Route = Microsoft.AspNetCore.Routing.Route;
 
 namespace ChristiansOeCsProject.Repositories
 {
+    /**
+     * Trip Repository er ansvarlig for at udføre CRUD aktioner med Trip entity
+     */
     public class TripRepo : ICRUDRepo<Trip>
     {
+        // Instantiere Firestore connection via FirebaseConnection static metode
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
+        
+        // Instantiere AttractionService så der kan hentes attractions tilhørende trips
         private readonly AttractionService _attractionService = new AttractionService();
 
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         */
         public async Task<Trip> Create(Trip trip)
         {
             DocumentReference documentReference = _db.Collection("routes").Document(trip.Id);
@@ -24,6 +34,8 @@ namespace ChristiansOeCsProject.Repositories
             };
             await documentReference.CreateAsync(data);
             
+            
+            // tager alle attractions hos et trip og opretter i databasen
             CollectionReference collectionReference = documentReference.Collection("attractions");
             foreach (var tripAttraction in trip.Attractions)
             {
@@ -34,55 +46,12 @@ namespace ChristiansOeCsProject.Repositories
             return trip; 
         }
 
-        public async IAsyncEnumerable<Trip> ReadAll()
-        {
-            var qref = _db.Collection("routes");
-            var snap = await qref.GetSnapshotAsync();
-
-            foreach (var docsnap in snap)
-            {
-                if (docsnap.Exists)
-                {
-                    var id = docsnap.Id;
-                    
-                    var dict = docsnap.ToDictionary();
-                    var name = Convert.ToString(dict["name"]);
-                    var info = Convert.ToString(dict["info"]);
-                    var themeId = Convert.ToInt32(dict["theme"]);
-                    Theme theme;
-                    if (themeId == 1)
-                    {
-                        theme = Theme.Nature;
-                    } 
-                    else if (themeId == 2)
-                    {
-                        theme = Theme.History;
-                    }
-                    else if (themeId == 3)
-                    {
-                        theme = Theme.War;
-                    }
-                    else {
-                        theme = Theme.None;
-                    }
-
-                    var attractions = new List<Attraction>();
-                    var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
-                    var attractionsSnap = await attractionsRef.GetSnapshotAsync();
-                    foreach (var attrsnap in attractionsSnap)
-                    {
-                        if (attrsnap.Exists)
-                        {
-                            attractions.Add(_attractionService.ReadById(attrsnap.Id));
-                        }
-                        
-                    }
-
-                    yield return new Trip(id, name, info, theme, attractions);
-                }
-            }
-        }
-
+        /**
+         * ReadById metode tager id fra et Attraction objekt og og forsøger at hente et Firebase document snapshot med tilsvarende id.
+         * Hvis dette ikke lykkedes returneres et null objekt.
+         *
+         * Henter derudover også alle tilhørende attractions
+         */
         public async Task<Trip> ReadById(string id)
         {
             var DocRef = _db.Collection("routes").Document(id);
@@ -93,20 +62,16 @@ namespace ChristiansOeCsProject.Repositories
                 var dict = docsnap.ToDictionary();
                 var name = Convert.ToString(dict["name"]);
                 var info = Convert.ToString(dict["info"]);
-                Theme theme;
-                if (dict["theme"].Equals("Nature"))
-                {
-                    theme = Theme.Nature;
-                } 
-                else if (dict["theme"].Equals("War"))
-                {
-                    theme = Theme.War;
-                }
-                else
-                {
-                    theme = Theme.History;
-                }
+                var themeId = Convert.ToInt32(dict["theme"]);
                 
+                Theme theme = themeId switch
+                {
+                    1 => Theme.Nature,
+                    2 => Theme.History,
+                    3 => Theme.War,
+                    _ => Theme.None
+                };
+
                 var attractions = new List<Attraction>();
                 var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
                 var attractionsSnap = await attractionsRef.GetSnapshotAsync();
@@ -125,6 +90,62 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
+        /**
+         * ReadAll metode er et loop af ReadById metoden (se ovenstående), men istedet for at tage id, så tager den bare alle
+         * document referencer fra en collection og gemmer i en CollectionReference
+         *
+         * Metoden returnerer en Async Enumerable som betyder at samlingen vil bliver returneret efter hver gang et nyt objekt er blevet læst
+         * Dette betyder at user operations kan fortsætte mens, applikationen arbejder
+         */
+        public async IAsyncEnumerable<Trip> ReadAll()
+        {
+            var qref = _db.Collection("routes");
+            var snap = await qref.GetSnapshotAsync();
+
+            foreach (var docsnap in snap)
+            {
+                if (docsnap.Exists)
+                {
+                    var id = docsnap.Id;
+                    yield return ReadById(id).Result;
+
+                    /*
+                    var dict = docsnap.ToDictionary();
+                    var name = Convert.ToString(dict["name"]);
+                    var info = Convert.ToString(dict["info"]);
+                    var themeId = Convert.ToInt32(dict["theme"]);
+                    
+                    Theme theme = themeId switch
+                    {
+                        1 => Theme.Nature,
+                        2 => Theme.History,
+                        3 => Theme.War,
+                        _ => Theme.None
+                    };
+
+                    var attractions = new List<Attraction>();
+                    var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
+                    var attractionsSnap = await attractionsRef.GetSnapshotAsync();
+                    foreach (var attrsnap in attractionsSnap)
+                    {
+                        if (attrsnap.Exists)
+                        {
+                            attractions.Add(_attractionService.ReadById(attrsnap.Id));
+                        }
+                        
+                    }
+
+                    yield return new Trip(id, name, info, theme, attractions);
+                    */
+                }
+            }
+        }
+
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         */
         public async Task<Trip> Update(Trip trip)
         {
             DocumentReference documentReference = _db.Collection("routes").Document(trip.Id);
@@ -159,6 +180,10 @@ namespace ChristiansOeCsProject.Repositories
             return trip;
         }
 
+        /**
+         * Delete metoden tager id på et objekt og forsøger at slette det fra databasen
+         * Sletter først alle attractions i et trip, derefter selve trippet
+         */
         public async void Delete(string id)
         {
             DocumentReference documentReference = _db.Collection("routes").Document(id);

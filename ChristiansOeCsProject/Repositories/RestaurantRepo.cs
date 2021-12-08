@@ -6,10 +6,19 @@ using Google.Cloud.Firestore;
 
 namespace ChristiansOeCsProject.Repositories
 {
+    /**
+     * Restaurant Repository er ansvarlig for at udføre CRUD aktioner med Restaurant entity
+     */
     public class RestaurantRepo : ICRUDRepo<Restaurant>
     {
+        // Instantiere Firestore connection via FirebaseConnection static metode
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
 
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         */
         public async Task<Restaurant> Create(Restaurant restaurant)
         {
             DocumentReference documentReference = _db.Collection("restaurants").Document(restaurant.Id);
@@ -27,34 +36,10 @@ namespace ChristiansOeCsProject.Repositories
             return restaurant;
         }
 
-        public async IAsyncEnumerable<Restaurant> ReadAll()
-        {
-            var qref = _db.Collection("restaurants");
-            var snap = await qref.GetSnapshotAsync();
-
-            foreach (var docsnap in snap)
-            {
-                if (docsnap.Exists)
-                {
-                    var id = docsnap.Id;
-                    
-                    var dict = docsnap.ToDictionary();
-                    var lat = Convert.ToDouble(dict["lat"]);
-                    var longi = Convert.ToDouble(dict["long"]);
-                    var name = Convert.ToString(dict["name"]);
-                    var url = Convert.ToString(dict["url"]);
-                    if (url is "null")
-                    {
-                        url = null;
-                    }
-                    var open = Convert.ToDouble(dict["open"]);
-                    var close = Convert.ToDouble(dict["close"]);
-                    
-                    yield return new Restaurant(id, lat, longi, name, url, open, close);
-                }
-            }
-        }
-
+        /**
+         * ReadById metode tager id fra et Attraction objekt og og forsøger at hente et Firebase document snapshot med tilsvarende id.
+         * Hvis dette ikke lykkedes returneres et null objekt.
+         */
         public async Task<Restaurant> ReadById(string id)
         {
             var DocRef = _db.Collection("restaurants").Document(id);
@@ -62,23 +47,63 @@ namespace ChristiansOeCsProject.Repositories
 
             if (docsnap.Exists)
             {
-                var dict = docsnap.ToDictionary();
-                var lat = Convert.ToDouble(dict["lat"]);
-                var longi = Convert.ToDouble(dict["long"]);
-                var name = Convert.ToString(dict["name"]);
-                var url = Convert.ToString(dict["url"]);
+                Dictionary<string, object> dict = docsnap.ToDictionary();
+                double lat = Convert.ToDouble(dict["lat"]);
+                double longi = Convert.ToDouble(dict["long"]);
+                string name = Convert.ToString(dict["name"]);
+                string url = Convert.ToString(dict["url"]);
                 if (url is "null")
                 {
                     url = null;
                 }
-                var open = Convert.ToDouble(dict["open"]);
-                var close = Convert.ToDouble(dict["close"]);
+                double open = Convert.ToDouble(dict["open"]);
+                double close = Convert.ToDouble(dict["close"]);
                 return new Restaurant(id, lat, longi, name, url, open, close);
             }
 
             return null;
         }
 
+        /**
+         * ReadAll metode er et loop af ReadById metoden (se ovenstående), men istedet for at tage id, så tager den bare alle
+         * document referencer fra en collection og gemmer i en CollectionReference
+         *
+         * Metoden returnerer en Async Enumerable som betyder at samlingen vil bliver returneret efter hver gang et nyt objekt er blevet læst
+         * Dette betyder at user operations kan fortsætte mens, applikationen arbejder
+         */
+        public async IAsyncEnumerable<Restaurant> ReadAll()
+        {
+            CollectionReference qref = _db.Collection("restaurants");
+            QuerySnapshot snap = await qref.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot docsnap in snap)
+            {
+                if (docsnap.Exists)
+                {
+                    string id = docsnap.Id;
+                    
+                    Dictionary<string, object> dict = docsnap.ToDictionary();
+                    double lat = Convert.ToDouble(dict["lat"]);
+                    double longi = Convert.ToDouble(dict["long"]);
+                    string name = Convert.ToString(dict["name"]);
+                    string url = Convert.ToString(dict["url"]);
+                    if (url is "null")
+                    {
+                        url = null;
+                    }
+                    double open = Convert.ToDouble(dict["open"]);
+                    double close = Convert.ToDouble(dict["close"]);
+                    
+                    yield return new Restaurant(id, lat, longi, name, url, open, close);
+                }
+            }
+        }
+
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         */
         public async Task<Restaurant> Update(Restaurant restaurant)
         {
             DocumentReference documentReference = _db.Collection("restaurants").Document(restaurant.Id);
@@ -101,6 +126,7 @@ namespace ChristiansOeCsProject.Repositories
             return restaurant;
         }
 
+        // Delete metoden tager id på et objekt og forsøger at slette det fra databasen
         public void Delete(string id)
         {
             DocumentReference documentReference = _db.Collection("restaurants").Document(id);

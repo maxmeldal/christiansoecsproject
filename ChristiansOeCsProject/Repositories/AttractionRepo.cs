@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
@@ -13,13 +10,29 @@ using Google.Cloud.Firestore;
 
 namespace ChristiansOeCsProject.Repositories
 {
+    /**
+     * Attraction Repository er ansvarlig for at udføre CRUD aktioner med Attraction entity
+     * Ulig de andre repositories, instantiere attraction repo også en firebase storage,
+     * så den kan arbejde med lyd- og videofiler
+     *
+     * OBS: Oprettelse og afhentelse af filer fungerer ikke. API'en kan godt sende filer til firebase storage,
+     * men de er broken ved ankomst. Servicen forsøger at Base64 String og konvertere den til et byte[] som så sendes med.
+     * Ved ankomst kan det ses at filen er komprimeret og den byte[] man får med tilbage når man henter er ikke magen til den man sendte
+     */
     public class AttractionRepo : ICRUDRepo<Attraction>
     {
+        //Instantiere firestore connection og storage connection via static methods i FirebaseConnection klassen
         private readonly FirestoreDb _db = FirebaseConnection.GetConnection();
         private readonly FirebaseStorage _storage = FirebaseConnection.GetStorage();
+        
+        // Webclient skal bruges til at hente filer fra Storage
         private readonly WebClient _webclient = new System.Net.WebClient();
-
-
+        
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         */
         public async Task<Attraction> Create(Attraction attraction)
         {
             DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
@@ -34,72 +47,33 @@ namespace ChristiansOeCsProject.Repositories
             return attraction;
         }
 
-        public async IAsyncEnumerable<Attraction> ReadAll()
-        {
-            var qref = _db.Collection("attractions");
-            var snap = await qref.GetSnapshotAsync();
-
-            foreach (var docsnap in snap)
-            {
-                if (docsnap.Exists)
-                {
-                    var id = docsnap.Id;
-                    
-                    var dict = docsnap.ToDictionary();
-                    var lat = Convert.ToDouble(dict["lat"]);
-                    var longi = Convert.ToDouble(dict["long"]);
-                    var name = Convert.ToString(dict["name"]);
-                    
-                    string video = null;
-                    try
-                    {
-                        var videoRef = _storage.Child(id).Child("video.mp4");
-                        var videoUrl = await videoRef.GetDownloadUrlAsync();
-                        var videoBytes = _webclient.DownloadData(videoUrl);
-                        video = Convert.ToBase64String(videoBytes);
-                    }
-                    catch (Exception e)
-                    {
-                        // ignored
-                    }
-
-                    string audio = null;
-                    try
-                    {
-                        var audioRef = _storage.Child(id).Child("audio.mp3");
-                        var audioUrl = await audioRef.GetDownloadUrlAsync();
-                        var audioBytes = _webclient.DownloadData(audioUrl);
-                        audio = Convert.ToBase64String(audioBytes);
-                    }
-                    catch (Exception e)
-                    {
-                        // ignored
-                    }
-
-                    yield return new Attraction(id, lat, longi, name, video, audio);
-                }
-            }
-        }
-
+        /**
+         * ReadById metode tager id fra et Attraction objekt og og forsøger at hente et Firebase document snapshot med tilsvarende id.
+         * Hvis dette ikke lykkedes returneres et null objekt.
+         * Metoden vil ligeledes forsøge at hente video og lydfiler, ved at få downloadurl fra en storage reference, og derefter bruge
+         * webclient til at downloade og derefter konvertere byte[] til Base64 String
+         *
+         * Exceptions er ignored - mulig implementation: send mail til error-mailserver
+         */
         public async Task<Attraction> ReadById(string id)
         {
-            var docRef = _db.Collection("attractions").Document(id);
-            var docsnap = await docRef.GetSnapshotAsync();
+            DocumentReference docRef = _db.Collection("attractions").Document(id);
+            DocumentSnapshot docsnap = await docRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
             {
-                var dict = docsnap.ToDictionary();
-                var lat = Convert.ToDouble(dict["lat"]);
-                var longi = Convert.ToDouble(dict["long"]);
-                var name = Convert.ToString(dict["name"]);
+                Dictionary<string, object> dict = docsnap.ToDictionary();
+                double lat = Convert.ToDouble(dict["lat"]);
+                double longi = Convert.ToDouble(dict["long"]);
+                string name = Convert.ToString(dict["name"]);
                 
 
                 string video = null;
                 try
                 {
-                    var videoRef = _storage.Child(id).Child("video.mp4");
-                    var videoUrl = await videoRef.GetDownloadUrlAsync();
-                    var videoBytes = _webclient.DownloadData(videoUrl);
+                    FirebaseStorageReference videoRef = _storage.Child(id).Child("video.mp4");
+                    string videoUrl = await videoRef.GetDownloadUrlAsync();
+                    byte[] videoBytes = _webclient.DownloadData(videoUrl);
                     video = Convert.ToBase64String(videoBytes);
                 }
                 catch (Exception e)
@@ -110,9 +84,9 @@ namespace ChristiansOeCsProject.Repositories
                 string audio = null;
                 try
                 {
-                    var audioRef = _storage.Child(id).Child("audio.mp3");
-                    var audioUrl = await audioRef.GetDownloadUrlAsync();
-                    var audioBytes = _webclient.DownloadData(audioUrl);
+                    FirebaseStorageReference audioRef = _storage.Child(id).Child("audio.mp3");
+                    string audioUrl = await audioRef.GetDownloadUrlAsync();
+                    byte[] audioBytes = _webclient.DownloadData(audioUrl);
                     audio = Convert.ToBase64String(audioBytes);
                 }
                 catch (Exception e)
@@ -126,6 +100,67 @@ namespace ChristiansOeCsProject.Repositories
             return null;
         }
 
+        /**
+         * ReadAll metode er et loop af ReadById metoden (se ovenstående), men istedet for at tage id, så tager den bare alle
+         * document referencer fra en collection og gemmer i en CollectionReference
+         *
+         * Metoden returnerer en Async Enumerable som betyder at samlingen vil bliver returneret efter hver gang et nyt objekt er blevet læst
+         * Dette betyder at user operations kan fortsætte mens, applikationen arbejder
+         */
+        public async IAsyncEnumerable<Attraction> ReadAll()
+        {
+            CollectionReference qref = _db.Collection("attractions");
+            QuerySnapshot snap = await qref.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot docsnap in snap)
+            {
+                if (docsnap.Exists)
+                {
+                    string id = docsnap.Id;
+                    
+                    Dictionary<string, object> dict = docsnap.ToDictionary();
+                    double lat = Convert.ToDouble(dict["lat"]);
+                    double longi = Convert.ToDouble(dict["long"]);
+                    string name = Convert.ToString(dict["name"]);
+                    
+                    string video = null;
+                    try
+                    {
+                        FirebaseStorageReference videoRef = _storage.Child(id).Child("video");
+                        string videoUrl = await videoRef.GetDownloadUrlAsync();
+                        byte[] videoBytes = _webclient.DownloadData(videoUrl);
+                        video = Convert.ToBase64String(videoBytes);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
+                    string audio = null;
+                    try
+                    {
+                        FirebaseStorageReference audioRef = _storage.Child(id).Child("audio");
+                        string audioUrl = await audioRef.GetDownloadUrlAsync();
+                        byte[] audioBytes = _webclient.DownloadData(audioUrl);
+                        audio = Convert.ToBase64String(audioBytes);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
+                    yield return new Attraction(id, lat, longi, name, video, audio);
+                }
+            }
+        }
+
+        /**
+         * For at oprette/opdatere i databasen skal alt informationen tages fra objektet og gemmes i et Dictionary<String, Object>
+         * Dette dictionary sendes med via en DocumentReference taget fra Firestore
+         * Metoden udføres asynkront så user operations kan fortsætte
+         *
+         * I tilfælde af at attraction har enten video eller audio tilknyttet så vil de også forsøges at blive oprettet
+         */
         public async Task<Attraction> Update(Attraction attraction)
         {
             DocumentReference documentReference = _db.Collection("attractions").Document(attraction.Id);
@@ -142,41 +177,34 @@ namespace ChristiansOeCsProject.Repositories
                 await documentReference.SetAsync(data);
             }
 
-            if (attraction.Video != null)
-            {
-                SetVideo(attraction.Id, attraction.Video);
-            }
-
-            if (attraction.Audio != null)
-            {
-                SetAudio(attraction.Id, attraction.Audio);
-            }
+            if (attraction.Video != null) SetFile(attraction.Id, attraction.Video, "video");
+            if (attraction.Audio != null) SetFile(attraction.Id, attraction.Audio, "audio");
 
             return attraction;
         }
 
-        private void SetVideo(string id, string video)
+        /**
+         * SetFile tager først id på den attraction som filen tilhører, dernæst filen i Base64 String format,
+         * og sidst navnet filen skal have i Storage
+         */
+        private void SetFile(string id, string file, string name)
         {
-            var videoArr = Encoding.UTF8.GetBytes(video);
+            // konverter Base64 Stringen til et byte[]
+            byte[] fileArr = Encoding.UTF8.GetBytes(file);
             
-            var stream = new MemoryStream();
-            stream.Write(videoArr, 0, videoArr.Length);
+            // Skriv byte[] til memorystream
+            MemoryStream stream = new MemoryStream();
+            stream.Write(fileArr, 0, fileArr.Length);
             stream.Seek(0, SeekOrigin.Begin);
 
-            _storage.Child(id).Child("video").PutAsync(stream);
+            // send stream til storage
+            _storage.Child(id).Child(name).PutAsync(stream);
         }
 
-        private void SetAudio(string id, string audio)
-        {
-            var audioArr = Encoding.UTF8.GetBytes(audio);
-            
-            var stream = new MemoryStream();
-            stream.Write(audioArr, 0, audioArr.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-
-            _storage.Child(id).Child("audio").PutAsync(stream);
-        }
-
+        /**
+         * Delete metoden tager id på et objekt og forsøger at slette det fra databasen
+         * I tilfælde af attraction vil den også forsøge at slette alle tilhørende filer
+         */
         public void Delete(string id)
         {
             DocumentReference documentReference = _db.Collection("attractions").Document(id);
