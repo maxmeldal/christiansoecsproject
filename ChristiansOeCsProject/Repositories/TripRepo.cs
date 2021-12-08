@@ -37,7 +37,7 @@ namespace ChristiansOeCsProject.Repositories
             
             // tager alle attractions hos et trip og opretter i databasen
             CollectionReference collectionReference = documentReference.Collection("attractions");
-            foreach (var tripAttraction in trip.Attractions)
+            foreach (Attraction tripAttraction in trip.Attractions)
             {
                 DocumentReference docRef = collectionReference.Document(tripAttraction.Id);
                 await docRef.CreateAsync(new Dictionary<string, object>());
@@ -54,15 +54,15 @@ namespace ChristiansOeCsProject.Repositories
          */
         public async Task<Trip> ReadById(string id)
         {
-            var DocRef = _db.Collection("routes").Document(id);
-            var docsnap = await DocRef.GetSnapshotAsync();
+            DocumentReference docRef = _db.Collection("routes").Document(id);
+            DocumentSnapshot docsnap = await docRef.GetSnapshotAsync();
 
             if (docsnap.Exists)
             {
-                var dict = docsnap.ToDictionary();
-                var name = Convert.ToString(dict["name"]);
-                var info = Convert.ToString(dict["info"]);
-                var themeId = Convert.ToInt32(dict["theme"]);
+                Dictionary<string, object> dict = docsnap.ToDictionary();
+                string name = Convert.ToString(dict["name"]);
+                string info = Convert.ToString(dict["info"]);
+                int themeId = Convert.ToInt32(dict["theme"]);
                 
                 Theme theme = themeId switch
                 {
@@ -72,10 +72,10 @@ namespace ChristiansOeCsProject.Repositories
                     _ => Theme.None
                 };
 
-                var attractions = new List<Attraction>();
-                var attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
-                var attractionsSnap = await attractionsRef.GetSnapshotAsync();
-                foreach (var attrsnap in attractionsSnap)
+                List<Attraction> attractions = new List<Attraction>();
+                CollectionReference attractionsRef = _db.Collection("routes").Document(id).Collection("attractions");
+                QuerySnapshot attractionsSnap = await attractionsRef.GetSnapshotAsync();
+                foreach (DocumentSnapshot attrsnap in attractionsSnap)
                 {
                     if (attrsnap.Exists)
                     {
@@ -99,14 +99,14 @@ namespace ChristiansOeCsProject.Repositories
          */
         public async IAsyncEnumerable<Trip> ReadAll()
         {
-            var qref = _db.Collection("routes");
-            var snap = await qref.GetSnapshotAsync();
+            CollectionReference qref = _db.Collection("routes");
+            QuerySnapshot snap = await qref.GetSnapshotAsync();
 
-            foreach (var docsnap in snap)
+            foreach (DocumentSnapshot docsnap in snap)
             {
                 if (docsnap.Exists)
                 {
-                    var id = docsnap.Id;
+                    string id = docsnap.Id;
                     yield return ReadById(id).Result;
 
                     /*
@@ -165,13 +165,13 @@ namespace ChristiansOeCsProject.Repositories
             //deletes all attractions in trip
             CollectionReference collectionReference = documentReference.Collection("attractions");
             QuerySnapshot collSnap = await collectionReference.GetSnapshotAsync();
-            foreach (var documentSnapshot in collSnap.Documents)
+            foreach (DocumentSnapshot documentSnapshot in collSnap.Documents)
             {
                 await documentSnapshot.Reference.DeleteAsync();
             }
             
             //creates new attractions for the trip
-            foreach (var tripAttraction in trip.Attractions)
+            foreach (Attraction tripAttraction in trip.Attractions)
             {
                 DocumentReference docRef = collectionReference.Document(tripAttraction.Id);
                 await docRef.CreateAsync(new Dictionary<string, object>());
@@ -190,7 +190,7 @@ namespace ChristiansOeCsProject.Repositories
             CollectionReference collectionReference = documentReference.Collection("attractions");
             QuerySnapshot snap = await collectionReference.GetSnapshotAsync();
 
-            foreach (var documentSnapshot in snap.Documents)
+            foreach (DocumentSnapshot documentSnapshot in snap.Documents)
             {
                 await documentSnapshot.Reference.DeleteAsync();
             }
