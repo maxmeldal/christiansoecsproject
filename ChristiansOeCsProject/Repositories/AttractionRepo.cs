@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ChristiansOeCsProject.Entities;
 using Firebase.Storage;
@@ -215,7 +216,7 @@ namespace ChristiansOeCsProject.Repositories
             stream.Seek(0, SeekOrigin.Begin);
 
             // send stream til storage
-            _storage.Child(id).Child(name).PutAsync(stream);
+            _storage.Child(id).Child(name).PutAsync(stream, CancellationToken.None);
         }
 
         /**
