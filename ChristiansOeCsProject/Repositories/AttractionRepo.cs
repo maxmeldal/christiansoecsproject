@@ -97,7 +97,7 @@ namespace ChristiansOeCsProject.Repositories
                 string image = null;
                 try
                 {
-                    FirebaseStorageReference imageRef = _storage.Child(id).Child("image.png");
+                    FirebaseStorageReference imageRef = _storage.Child(id).Child("image");
                     string imageUrl = await imageRef.GetDownloadUrlAsync();
                     byte[] imageBytes = _webclient.DownloadData(imageUrl);
                     image = Convert.ToBase64String(imageBytes);
@@ -195,7 +195,7 @@ namespace ChristiansOeCsProject.Repositories
 
             if (attraction.Video != null) SetFile(attraction.Id, attraction.Video, "video");
             if (attraction.Audio != null) SetFile(attraction.Id, attraction.Audio, "audio");
-            if (attraction.Image != null) SetFile(attraction.Id, attraction.Image, "image.png");
+            if (attraction.Image != null) SetFile(attraction.Id, attraction.Image, "image");
 
             return attraction;
         }
@@ -246,7 +246,7 @@ namespace ChristiansOeCsProject.Repositories
 
             try
             {
-                _storage.Child(id).Child("image.png").DeleteAsync();
+                _storage.Child(id).Child("image").DeleteAsync();
             }
             catch (Exception e)
             {
