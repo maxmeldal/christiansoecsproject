@@ -71,7 +71,7 @@ namespace ChristiansOeCsProject.Repositories
                 string video = null;
                 try
                 {
-                    FirebaseStorageReference videoRef = _storage.Child(id).Child("video.mp4");
+                    FirebaseStorageReference videoRef = _storage.Child(id).Child("video");
                     string videoUrl = await videoRef.GetDownloadUrlAsync();
                     byte[] videoBytes = _webclient.DownloadData(videoUrl);
                     video = Convert.ToBase64String(videoBytes);
@@ -84,7 +84,7 @@ namespace ChristiansOeCsProject.Repositories
                 string audio = null;
                 try
                 {
-                    FirebaseStorageReference audioRef = _storage.Child(id).Child("audio.mp3");
+                    FirebaseStorageReference audioRef = _storage.Child(id).Child("audio");
                     string audioUrl = await audioRef.GetDownloadUrlAsync();
                     byte[] audioBytes = _webclient.DownloadData(audioUrl);
                     audio = Convert.ToBase64String(audioBytes);
@@ -94,7 +94,20 @@ namespace ChristiansOeCsProject.Repositories
                     // ignored
                 }
 
-                return new Attraction(id, lat, longi, name, video, audio);
+                string image = null;
+                try
+                {
+                    FirebaseStorageReference imageRef = _storage.Child(id).Child("image");
+                    string imageUrl = await imageRef.GetDownloadUrlAsync();
+                    byte[] imageBytes = _webclient.DownloadData(imageUrl);
+                    image = Convert.ToBase64String(imageBytes);
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
+
+                return new Attraction(id, lat, longi, name, video, audio, image);
             }
 
             return null;
@@ -182,6 +195,7 @@ namespace ChristiansOeCsProject.Repositories
 
             if (attraction.Video != null) SetFile(attraction.Id, attraction.Video, "video");
             if (attraction.Audio != null) SetFile(attraction.Id, attraction.Audio, "audio");
+            if (attraction.Image != null) SetFile(attraction.Id, attraction.Image, "image");
 
             return attraction;
         }
