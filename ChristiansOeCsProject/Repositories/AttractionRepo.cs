@@ -243,6 +243,15 @@ namespace ChristiansOeCsProject.Repositories
             {
                 // ignored
             }
+
+            try
+            {
+                _storage.Child(id).Child("image").DeleteAsync();
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
         }
     }
 }
