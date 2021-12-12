@@ -131,9 +131,8 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     string id = docsnap.Id;
-                    yield return ReadById(id).Result;
 
-                    /*
+                    
                     Dictionary<string, object> dict = docsnap.ToDictionary();
                     double lat = Convert.ToDouble(dict["lat"]);
                     double longi = Convert.ToDouble(dict["long"]);
@@ -164,9 +163,22 @@ namespace ChristiansOeCsProject.Repositories
                     {
                         // ignored
                     }
+                    
+                    string image = null;
+                    try
+                    {
+                        FirebaseStorageReference imageRef = _storage.Child(id).Child("image");
+                        string imageUrl = await imageRef.GetDownloadUrlAsync();
+                        byte[] imageBytes = _webclient.DownloadData(imageUrl);
+                        image = Convert.ToBase64String(imageBytes);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
 
-                    yield return new Attraction(id, lat, longi, name, video, audio);
-                    */
+                    yield return new Attraction(id, lat, longi, name, video, audio, image);
+                    
                 }
             }
         }

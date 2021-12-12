@@ -107,9 +107,7 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     string id = docsnap.Id;
-                    yield return ReadById(id).Result;
-
-                    /*
+                    
                     var dict = docsnap.ToDictionary();
                     var name = Convert.ToString(dict["name"]);
                     var info = Convert.ToString(dict["info"]);
@@ -136,7 +134,6 @@ namespace ChristiansOeCsProject.Repositories
                     }
 
                     yield return new Trip(id, name, info, theme, attractions);
-                    */
                 }
             }
         }

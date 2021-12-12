@@ -81,9 +81,7 @@ namespace ChristiansOeCsProject.Repositories
                 if (docsnap.Exists)
                 {
                     string id = docsnap.Id;
-                    yield return ReadById(id).Result;
-
-                    /*
+                    
                     Dictionary<string, object> dict = docsnap.ToDictionary();
                     double lat = Convert.ToDouble(dict["lat"]);
                     double longi = Convert.ToDouble(dict["long"]);
@@ -97,7 +95,7 @@ namespace ChristiansOeCsProject.Repositories
                     double close = Convert.ToDouble(dict["close"]);
                     
                     yield return new Restaurant(id, lat, longi, name, url, open, close);
-                    */
+                    
                 }
             }
         }
