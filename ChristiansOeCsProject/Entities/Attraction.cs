@@ -11,19 +11,24 @@ namespace ChristiansOeCsProject.Entities
         private string _video;
         private string _audio;
         private string _image;
-        public Attraction(string id, double latitiude, double longtitude, string name, string video, string audio, string image) : base(id, latitiude, longtitude, name)
+        private string _description;
+
+        public Attraction(string id, double latitiude, double longtitude, string name, string video, string audio, string image, string description) : base(id, latitiude, longtitude, name)
         {
             _video = video;
             _audio = audio;
             _image = image;
+            _description = description;
         }
-        public Attraction(double latitude, double longitude, string name, string video, string audio, string image) : base(latitude, longitude, name)
+
+        public Attraction(double latitude, double longitude, string name, string video, string audio, string image, string description) : base(latitude, longitude, name)
         {
             _video = video;
             _audio = audio;            
             _image = image;
+            _description = description;
         }
-        
+
         [JsonConstructor]
         public Attraction()
         {
@@ -45,6 +50,12 @@ namespace ChristiansOeCsProject.Entities
         {
             get => _image;
             set => _image = value;
+        }
+
+        public string Description
+        {
+            get => _description;
+            set => _description = value;
         }
     }
 }

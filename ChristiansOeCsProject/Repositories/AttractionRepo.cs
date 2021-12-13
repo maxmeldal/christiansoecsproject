@@ -42,6 +42,7 @@ namespace ChristiansOeCsProject.Repositories
                 {"lat", attraction.Latitude},
                 {"long", attraction.Longitude},
                 {"name", attraction.Name},
+                {"description", attraction.Description}
             };
             await documentReference.CreateAsync(data);
 
@@ -67,6 +68,7 @@ namespace ChristiansOeCsProject.Repositories
                 double lat = Convert.ToDouble(dict["lat"]);
                 double longi = Convert.ToDouble(dict["long"]);
                 string name = Convert.ToString(dict["name"]);
+                string description = Convert.ToString(dict["description"]);
                 
 
                 string video = null;
@@ -108,7 +110,7 @@ namespace ChristiansOeCsProject.Repositories
                     // ignored
                 }
 
-                return new Attraction(id, lat, longi, name, video, audio, image);
+                return new Attraction(id, lat, longi, name, video, audio, image, description);
             }
 
             return null;
@@ -137,6 +139,7 @@ namespace ChristiansOeCsProject.Repositories
                     double lat = Convert.ToDouble(dict["lat"]);
                     double longi = Convert.ToDouble(dict["long"]);
                     string name = Convert.ToString(dict["name"]);
+                    string description = Convert.ToString(dict["description"]);
                     
                     string video = null;
                     try
@@ -177,7 +180,7 @@ namespace ChristiansOeCsProject.Repositories
                         // ignored
                     }
 
-                    yield return new Attraction(id, lat, longi, name, video, audio, image);
+                    yield return new Attraction(id, lat, longi, name, video, audio, image, description);
                     
                 }
             }
@@ -197,7 +200,8 @@ namespace ChristiansOeCsProject.Repositories
             {
                 {"lat", attraction.Latitude},
                 {"long", attraction.Longitude},
-                {"name", attraction.Name}
+                {"name", attraction.Name},
+                {"description", attraction.Description}
             };
 
             DocumentSnapshot snap = await documentReference.GetSnapshotAsync();

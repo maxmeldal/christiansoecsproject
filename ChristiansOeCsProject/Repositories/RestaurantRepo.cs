@@ -29,7 +29,8 @@ namespace ChristiansOeCsProject.Repositories
                 {"name", restaurant.Name},
                 {"url", restaurant.Url},
                 {"open", restaurant.Open},
-                {"close", restaurant.Close}
+                {"close", restaurant.Close},
+                {"description", restaurant.Description}
             };
             await documentReference.CreateAsync(data);
 
@@ -58,7 +59,8 @@ namespace ChristiansOeCsProject.Repositories
                 }
                 double open = Convert.ToDouble(dict["open"]);
                 double close = Convert.ToDouble(dict["close"]);
-                return new Restaurant(id, lat, longi, name, url, open, close);
+                string description = Convert.ToString(dict["description"]);
+                return new Restaurant(id, lat, longi, name, url, open, close, description);
             }
 
             return null;
@@ -93,8 +95,9 @@ namespace ChristiansOeCsProject.Repositories
                     }
                     double open = Convert.ToDouble(dict["open"]);
                     double close = Convert.ToDouble(dict["close"]);
+                    string description = Convert.ToString(dict["description"]);
                     
-                    yield return new Restaurant(id, lat, longi, name, url, open, close);
+                    yield return new Restaurant(id, lat, longi, name, url, open, close, description);
                     
                 }
             }
@@ -115,7 +118,8 @@ namespace ChristiansOeCsProject.Repositories
                 {"name", restaurant.Name},
                 {"url", restaurant.Url},
                 {"open", restaurant.Open},
-                {"close", restaurant.Close}
+                {"close", restaurant.Close},
+                {"description", restaurant.Description}
             };
 
             DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
