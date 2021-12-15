@@ -25,7 +25,6 @@ namespace ChristiansOeCsProject
             services.AddScoped<RestaurantService>();
             services.AddScoped<TripService>();
             services.AddScoped<AttractionService>();
-            services.AddScoped<DistanceService>();
             services.AddControllers();
         }
 
